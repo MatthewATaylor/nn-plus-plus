@@ -1,7 +1,7 @@
 #pragma once
 
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::ReLU::func(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::ReLU::func(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> activation;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -11,7 +11,7 @@ static Vec<float, UNITS> Activation::ReLU::func(const Vec<float, UNITS> &input) 
 	return activation;
 }
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::ReLU::derivative(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::ReLU::derivative(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> derivatives;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -22,7 +22,7 @@ static Vec<float, UNITS> Activation::ReLU::derivative(const Vec<float, UNITS> &i
 }
 
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::LeakyReLU::func(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::LeakyReLU::func(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> activation;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -32,7 +32,7 @@ static Vec<float, UNITS> Activation::LeakyReLU::func(const Vec<float, UNITS> &in
 	return activation;
 }
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::LeakyReLU::derivative(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::LeakyReLU::derivative(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> derivatives;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -43,16 +43,16 @@ static Vec<float, UNITS> Activation::LeakyReLU::derivative(const Vec<float, UNIT
 }
 
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::Linear::func(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::Linear::func(const Vec<float, UNITS> &input) {
 	return input;
 }
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::Linear::derivative(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::Linear::derivative(const Vec<float, UNITS> &input) {
 	return Vec<float, UNITS>(1.0f);
 }
 
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::Sigmoid::func(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::Sigmoid::func(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> activation;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -62,7 +62,7 @@ static Vec<float, UNITS> Activation::Sigmoid::func(const Vec<float, UNITS> &inpu
 	return activation;
 }
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::Sigmoid::derivative(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::Sigmoid::derivative(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> derivatives;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -74,7 +74,7 @@ static Vec<float, UNITS> Activation::Sigmoid::derivative(const Vec<float, UNITS>
 }
 
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::Tanh::func(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::Tanh::func(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> activation;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);
@@ -84,7 +84,7 @@ static Vec<float, UNITS> Activation::Tanh::func(const Vec<float, UNITS> &input) 
 	return activation;
 }
 template <size_t UNITS>
-static Vec<float, UNITS> Activation::Tanh::derivative(const Vec<float, UNITS> &input) {
+inline static Vec<float, UNITS> Activation::Tanh::derivative(const Vec<float, UNITS> &input) {
 	Vec<float, UNITS> derivatives;
 	for (size_t i = 0; i < UNITS; ++i) {
 		float inputValue = input.get(i);

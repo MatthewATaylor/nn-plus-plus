@@ -15,7 +15,7 @@ public:
 		);
 
 		template <size_t OUTPUT_SIZE>
-		static float derivative(
+		static Vec<float, OUTPUT_SIZE> derivative(
 			const Vec<float, OUTPUT_SIZE> &actual,
 			const Vec<float, OUTPUT_SIZE> &prediction
 		);
@@ -24,23 +24,29 @@ public:
 	class BinaryCrossEntropy {
 	public:
 		template <size_t OUTPUT_SIZE>
-		static float func(bool actual, float prediction);
+		static float func(
+			const Vec<float, OUTPUT_SIZE> &actual,
+			const Vec<float, OUTPUT_SIZE> &prediction
+		);
 
 		template <size_t OUTPUT_SIZE>
-		static float derivative(bool actual, float prediction);
+		static Vec<float, OUTPUT_SIZE> derivative(
+			const Vec<float, OUTPUT_SIZE> &actual,
+			const Vec<float, OUTPUT_SIZE> &prediction
+		);
 	};
 
 	class CategoricalCrossEntropy {
 	public:
 		template <size_t OUTPUT_SIZE>
 		static float func(
-			const Vec<bool, OUTPUT_SIZE> &actual,
+			const Vec<float, OUTPUT_SIZE> &actual,
 			const Vec<float, OUTPUT_SIZE> &prediction
 		);
 
 		template <size_t OUTPUT_SIZE>
-		static float derivative(
-			const Vec<bool, OUTPUT_SIZE> &actual,
+		static Vec<float, OUTPUT_SIZE> derivative(
+			const Vec<float, OUTPUT_SIZE> &actual,
 			const Vec<float, OUTPUT_SIZE> &prediction
 		);
 	};

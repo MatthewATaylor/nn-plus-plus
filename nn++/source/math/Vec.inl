@@ -1,40 +1,40 @@
 #pragma once
 
 template<typename T, size_t SIZE>
-Vec<T, SIZE>::Vec() {
+inline Vec<T, SIZE>::Vec() {
 	for (size_t i = 0; i < SIZE; ++i) {
 		elements[i] = 0;
 	}
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE>::Vec(T elements[SIZE]) {
+inline Vec<T, SIZE>::Vec(T elements[SIZE]) {
 	for (size_t i = 0; i < SIZE; ++i) {
 		this->elements[i] = elements[i];
 	}
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE>::Vec(T element) {
+inline Vec<T, SIZE>::Vec(T element) {
 	for (size_t i = 0; i < SIZE; ++i) {
 		this->elements[i] = element;
 	}
 }
 
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator=(const Vec<T, SIZE> &otherVec) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator=(const Vec<T, SIZE> &otherVec) {
 	for (size_t i = 0; i < SIZE; ++i) {
 		elements[i] = otherVec.elements[i];
 	}
 	return *this;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator+=(const Vec<T, SIZE> &otherVec) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator+=(const Vec<T, SIZE> &otherVec) {
 	for (size_t i = 0; i < SIZE; ++i) {
 		elements[i] += otherVec.elements[i];
 	}
 	return *this;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator-=(const Vec<T, SIZE> &otherVec) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator-=(const Vec<T, SIZE> &otherVec) {
 	for (size_t i = 0; i < SIZE; ++i) {
 		elements[i] -= otherVec.elements[i];
 	}
@@ -42,68 +42,68 @@ Vec<T, SIZE> &Vec<T, SIZE>::operator-=(const Vec<T, SIZE> &otherVec) {
 }
 
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator+=(const T addend) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator+=(const T value) {
 	for (size_t i = 0; i < SIZE; ++i) {
-		elements[i] += addend;
+		elements[i] += value;
 	}
 	return *this;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator-=(const T addend) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator-=(const T value) {
 	for (size_t i = 0; i < SIZE; ++i) {
-		elements[i] -= addend;
+		elements[i] -= value;
 	}
 	return *this;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator*=(const T addend) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator*=(const T value) {
 	for (size_t i = 0; i < SIZE; ++i) {
-		elements[i] *= addend;
+		elements[i] *= value;
 	}
 	return *this;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> &Vec<T, SIZE>::operator/=(const T addend) {
+inline Vec<T, SIZE> &Vec<T, SIZE>::operator/=(const T value) {
 	for (size_t i = 0; i < SIZE; ++i) {
-		elements[i] /= addend;
+		elements[i] /= value;
 	}
 	return *this;
 }
 
 template<typename T, size_t SIZE>
-Vec<T, SIZE> Vec<T, SIZE>::operator+(const Vec<T, SIZE> &otherVec) const {
+inline Vec<T, SIZE> Vec<T, SIZE>::operator+(const Vec<T, SIZE> &otherVec) const {
 	Vec<T, SIZE> vectorResult = *this;
 	return vectorResult += otherVec;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> Vec<T, SIZE>::operator-(const Vec<T, SIZE> &otherVec) const {
+inline Vec<T, SIZE> Vec<T, SIZE>::operator-(const Vec<T, SIZE> &otherVec) const {
 	Vec<T, SIZE> vectorResult = *this;
 	return vectorResult -= otherVec;
 }
 
 template<typename T, size_t SIZE>
-Vec<T, SIZE> Vec<T, SIZE>::operator+(const T addend) const {
+inline Vec<T, SIZE> Vec<T, SIZE>::operator+(const T value) const {
 	Vec<T, SIZE> vectorResult = *this;
-	return vectorResult += addend;
+	return vectorResult += value;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> Vec<T, SIZE>::operator-(const T addend) const {
+inline Vec<T, SIZE> Vec<T, SIZE>::operator-(const T value) const {
 	Vec<T, SIZE> vectorResult = *this;
-	return vectorResult -= addend;
+	return vectorResult -= value;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> Vec<T, SIZE>::operator*(const T addend) const {
+inline Vec<T, SIZE> Vec<T, SIZE>::operator*(const T value) const {
 	Vec<T, SIZE> vectorResult = *this;
-	return vectorResult *= addend;
+	return vectorResult *= value;
 }
 template<typename T, size_t SIZE>
-Vec<T, SIZE> Vec<T, SIZE>::operator/(const T addend) const {
+inline Vec<T, SIZE> Vec<T, SIZE>::operator/(const T value) const {
 	Vec<T, SIZE> vectorResult = *this;
-	return vectorResult /= addend;
+	return vectorResult /= value;
 }
 
 template<typename T, size_t SIZE>
-bool Vec<T, SIZE>::operator==(const Vec<T, SIZE> &otherVec) const {
+inline bool Vec<T, SIZE>::operator==(const Vec<T, SIZE> &otherVec) const {
 	for (size_t i = 0; i < SIZE; ++i) {
 		if (elements[i] != otherVec.elements[i]) {
 			return false;
@@ -113,7 +113,7 @@ bool Vec<T, SIZE>::operator==(const Vec<T, SIZE> &otherVec) const {
 }
 
 template<typename T, size_t SIZE>
-std::ostream &operator<<(std::ostream &outputStream, const Vec<T, SIZE> &vec) {
+inline std::ostream &operator<<(std::ostream &outputStream, const Vec<T, SIZE> &vec) {
 	outputStream << "<";
 	for (size_t i = 0; i < SIZE; ++i) {
 		outputStream << vec.elements[i];
@@ -126,7 +126,7 @@ std::ostream &operator<<(std::ostream &outputStream, const Vec<T, SIZE> &vec) {
 }
 
 template<typename T, size_t SIZE>
-T Vec<T, SIZE>::dot(const Vec<T, SIZE> &otherVec) const {
+inline T Vec<T, SIZE>::dot(const Vec<T, SIZE> &otherVec) const {
 	T result = 0;
 	for (size_t i = 0; i < SIZE; ++i) {
 		result += elements[i] * otherVec.elements[i];
@@ -134,7 +134,7 @@ T Vec<T, SIZE>::dot(const Vec<T, SIZE> &otherVec) const {
 	return result;
 }
 template<typename T, size_t SIZE>
-T Vec<T, SIZE>::magSquared() const {
+inline T Vec<T, SIZE>::magSquared() const {
 	T result = 0;
 	for (size_t i = 0; i < SIZE; ++i) {
 		result += elements[i] * elements[i];
@@ -142,15 +142,15 @@ T Vec<T, SIZE>::magSquared() const {
 	return result;
 }
 template<typename T, size_t SIZE>
-T Vec<T, SIZE>::mag() const {
+inline T Vec<T, SIZE>::mag() const {
 	return sqrt(magSquared());
 }
 
 template<typename T, size_t SIZE>
-T Vec<T, SIZE>::get(size_t index) const {
+inline T Vec<T, SIZE>::get(size_t index) const {
 	return elements[index];
 }
 template<typename T, size_t SIZE>
-void Vec<T, SIZE>::set(size_t index, T newElement) {
+inline void Vec<T, SIZE>::set(size_t index, T newElement) {
 	elements[index] = newElement;
 }
