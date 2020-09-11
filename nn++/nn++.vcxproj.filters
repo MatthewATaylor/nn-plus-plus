@@ -26,15 +26,6 @@
     <None Include="source\math\Vec.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="source\math\Vec_2.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="source\math\Vec_3.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="source\math\Vec_4.inl">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="source\Network.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -53,15 +44,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\math\Vec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\math\Vec_2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\math\Vec_3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\math\Vec_4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Network.h">

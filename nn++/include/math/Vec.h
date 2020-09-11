@@ -1,61 +1,65 @@
 #pragma once
 
+#include <cmath>
 #include <ostream>
+#include <initializer_list>
 
-template<typename T, size_t SIZE>
+template<typename T>
 class Vec;
 
-template<typename T, size_t SIZE>
-std::ostream &operator<<(std::ostream &outputStream, const Vec<T, SIZE> &vec);
+template<typename T>
+std::ostream &operator<<(std::ostream &outputStream, const Vec<T> &vec);
 
-template<typename T, size_t SIZE>
+template<typename T>
 class Vec {
 private:
-	T elements[SIZE];
+	void reset();
 
 public:
-	static constexpr size_t size = SIZE;
+	T *elements = nullptr;
+	size_t size = 0;
 
 	Vec();
-	Vec(T elements[SIZE]);
-	Vec(T element);
+	Vec(size_t size);
+	Vec(size_t size, T element);
+	Vec(std::initializer_list<T> elements);
+	Vec(const Vec<T> &vec);
+	Vec(Vec<T> &&vec);
 
-	Vec<T, SIZE> &operator=(const Vec<T, SIZE> &otherVec);
-	Vec<T, SIZE> &operator+=(const Vec<T, SIZE> &otherVec);
-	Vec<T, SIZE> &operator-=(const Vec<T, SIZE> &otherVec);
+	~Vec();
 
-	Vec<T, SIZE> &operator+=(const T value);
-	Vec<T, SIZE> &operator-=(const T value);
-	Vec<T, SIZE> &operator*=(const T value);
-	Vec<T, SIZE> &operator/=(const T value);
+	T &operator()(size_t index);
+	const T &operator()(size_t index) const;
 
-	Vec<T, SIZE> operator+(const Vec<T, SIZE> &otherVec) const;
-	Vec<T, SIZE> operator-(const Vec<T, SIZE> &otherVec) const;
+	Vec<T> &operator=(const Vec<T> &otherVec);
+	Vec<T> &operator=(Vec<T> &&otherVec);
+	Vec<T> &operator+=(const Vec<T> &otherVec);
+	Vec<T> &operator-=(const Vec<T> &otherVec);
+	Vec<T> &operator*=(const Vec<T> &otherVec);
+	Vec<T> &operator/=(const Vec<T> &otherVec);
 
-	Vec<T, SIZE> operator+(const T value) const;
-	Vec<T, SIZE> operator-(const T value) const;
-	Vec<T, SIZE> operator*(const T value) const;
-	Vec<T, SIZE> operator/(const T value) const;
+	Vec<T> &operator+=(const T value);
+	Vec<T> &operator-=(const T value);
+	Vec<T> &operator*=(const T value);
+	Vec<T> &operator/=(const T value);
 
-	bool operator==(const Vec<T, SIZE> &otherVec) const;
+	Vec<T> operator+(const Vec<T> &otherVec) const;
+	Vec<T> operator-(const Vec<T> &otherVec) const;
+	Vec<T> operator*(const Vec<T> &otherVec) const;
+	Vec<T> operator/(const Vec<T> &otherVec) const;
 
-	friend std::ostream &operator<<<T, SIZE>(std::ostream &outputStream, const Vec<T, SIZE> &vec);
+	Vec<T> operator+(const T value) const;
+	Vec<T> operator-(const T value) const;
+	Vec<T> operator*(const T value) const;
+	Vec<T> operator/(const T value) const;
 
-	T dot(const Vec<T, SIZE> &otherVec) const;
+	bool operator==(const Vec<T> &otherVec) const;
+
+	friend std::ostream &operator<<<T>(std::ostream &outputStream, const Vec<T> &vec);
+
+	T dot(const Vec<T> &otherVec) const;
 	T magSquared() const;
 	T mag() const;
-
-	T get(size_t index) const;
-	void set(size_t index, T newElement);
 };
 
-typedef Vec<float, 2> Vec2;
-typedef Vec<float, 3> Vec3;
-typedef Vec<float, 4> Vec4;
-
 #include "../../source/math/Vec.inl"
-
-//Template Specializations
-#include "Vec_2.h"
-#include "Vec_3.h"
-#include "Vec_4.h"

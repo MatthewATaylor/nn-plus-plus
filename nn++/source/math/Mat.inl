@@ -1,132 +1,195 @@
 #pragma once
 
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS>::Mat() {
-	forAllElementsMutable([&](size_t row, size_t col) -> void {
-		elements[row][col] = 0;
-	});
+template <typename T>
+void Mat<T>::reset() {
+	for (size_t i = 0; i < rows; ++i) {
+		delete[] elements[i];
+	}
+	delete[] elements;
 }
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS>::Mat(T elements[ROWS][COLS]) {
-	forAllElementsMutable([&](size_t row, size_t col) -> void {
-		this->elements[row][col] = elements[row][col];
-	});
+
+template <typename T>
+inline Mat<T>::Mat() {}
+template <typename T>
+inline Mat<T>::Mat(size_t rows, size_t cols) {
+	this->rows = rows;
+	this->cols = cols;
+
+	elements = new T*[rows];
+	for (size_t i = 0; i < rows; ++i) {
+		elements[i] = new T[cols];
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] = 0;
+		}
+	}
 }
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS>::Mat(std::initializer_list<std::initializer_list<T>> elements) {
-	size_t i = 0, j = 0;
+template <typename T>
+inline Mat<T>::Mat(size_t rows, size_t cols, T element) {
+	this->rows = rows;
+	this->cols = cols;
+
+	elements = new T*[rows];
+	for (size_t i = 0; i < rows; ++i) {
+		elements[i] = new T[cols];
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] = element;
+		}
+	}
+}
+template <typename T>
+inline Mat<T>::Mat(std::initializer_list<std::initializer_list<T>> elements) {
+	this->rows = elements.size();
+	this->cols = elements.begin()->size();
+
+	this->elements = new T*[rows];
+
+	size_t rowNum = 0;
+	size_t colNum = 0;
+
 	for (const auto &row : elements) {
+		colNum = 0;
+		this->elements[rowNum] = new T[cols];
 		for (const auto &element : row) {
-			this->elements[i][j] = element;
-			++j;
+			this->elements[rowNum][colNum] = element;
+			++colNum;
 		}
-		j = 0;
-		++i;
+		++rowNum;
 	}
 }
+template <typename T>
+inline Mat<T>::Mat(const Mat<T> &mat) {
+	rows = mat.rows;
+	cols = mat.cols;
 
-template<typename T, size_t ROWS, size_t COLS>
-template<typename LambdaType>
-inline void Mat<T, ROWS, COLS>::forAllElements(LambdaType lambda) const {
-	for (size_t i = 0; i < ROWS; ++i) {
-		for (size_t j = 0; j < COLS; ++j) {
-			lambda(i, j);
-		}
-	}
-}
-template<typename T, size_t ROWS, size_t COLS>
-template<typename LambdaType>
-inline void Mat<T, ROWS, COLS>::forAllElementsMutable(LambdaType lambda) {
-	for (size_t i = 0; i < ROWS; ++i) {
-		for (size_t j = 0; j < COLS; ++j) {
-			lambda(i, j);
+	elements = new T*[rows];
+
+	for (size_t i = 0; i < rows; ++i) {
+		elements[i] = new T[cols];
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] = mat(i, j);
 		}
 	}
 }
+template <typename T>
+inline Mat<T>::Mat(Mat<T> &&mat) {
+	rows = mat.rows;
+	cols = mat.cols;
+	elements = mat.elements;
 
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS> &Mat<T, ROWS, COLS>::operator=(const Mat<T, ROWS, COLS> &otherMat) {
-	forAllElementsMutable([&](size_t row, size_t col) -> void {
-		elements[row][col] = otherMat.elements[row][col];
-	});
-	return *this;
-}
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS> &Mat<T, ROWS, COLS>::operator+=(const Mat<T, ROWS, COLS> &otherMat) {
-	forAllElementsMutable([&](size_t row, size_t col) -> void {
-		elements[row][col] += otherMat.elements[row][col];
-	});
-	return *this;
-}
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS> &Mat<T, ROWS, COLS>::operator-=(const Mat<T, ROWS, COLS> &otherMat) {
-	forAllElementsMutable([&](size_t row, size_t col) -> void {
-		elements[row][col] -= otherMat.elements[row][col];
-	});
-	return *this;
+	mat.rows = 0;
+	mat.cols = 0;
+	mat.elements = nullptr;
 }
 
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS> Mat<T, ROWS, COLS>::operator+(const Mat<T, ROWS, COLS> &otherMat) const {
-	Mat<T, ROWS, COLS> newMat = *this;
-	return newMat += otherMat;
+template <typename T>
+inline Mat<T>::~Mat() {
+	reset();
 }
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, ROWS, COLS> Mat<T, ROWS, COLS>::operator-(const Mat<T, ROWS, COLS> &otherMat) const {
-	Mat<T, ROWS, COLS> newMat = *this;
-	return newMat -= otherMat;
+
+template <typename T>
+inline T &Mat<T>::operator()(size_t row, size_t col) {
+	return elements[row][col];
 }
-template<typename T, size_t ROWS, size_t COLS>
-template<size_t OTHER_COLS>
-inline Mat<T, ROWS, OTHER_COLS> Mat<T, ROWS, COLS>::operator*(const Mat<T, COLS, OTHER_COLS> &otherMat) const {
-	Mat<T, ROWS, OTHER_COLS> newMat;
-	for (size_t i = 0; i < ROWS; ++i) {
-		for (size_t j = 0; j < OTHER_COLS; ++j) {
+template <typename T>
+inline const T &Mat<T>::operator()(size_t row, size_t col) const {
+	return elements[row][col];
+}
+
+template <typename T>
+inline Mat<T> &Mat<T>::operator=(const Mat<T> &otherMat) {
+	reset();
+
+	rows = otherMat.rows;
+	cols = otherMat.cols;
+
+	elements = new T*[rows];
+
+	for (size_t i = 0; i < rows; ++i) {
+		elements[i] = new T[cols];
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] = otherMat(i, j);
+		}
+	}
+}
+template <typename T>
+inline Mat<T> &Mat<T>::operator=(Mat<T> &&otherMat) {
+	reset();
+	
+	rows = otherMat.rows;
+	cols = otherMat.cols;
+	elements = otherMat.elements;
+
+	otherMat.rows = 0;
+	otherMat.cols = 0;
+	otherMat.elements = nullptr;
+}
+template <typename T>
+inline Mat<T> &Mat<T>::operator+=(const Mat<T> &otherMat) {
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] += otherMat(i, j);
+		}
+	}
+	return *this;
+}
+template <typename T>
+inline Mat<T> &Mat<T>::operator-=(const Mat<T> &otherMat) {
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] -= otherMat(i, j);
+		}
+	}
+	return *this;
+}
+
+template <typename T>
+inline Mat<T> Mat<T>::operator+(const Mat<T> &otherMat) const {
+	Mat<T> result = *this;
+	return result += otherMat;
+}
+template <typename T>
+inline Mat<T> Mat<T>::operator-(const Mat<T> &otherMat) const {
+	Mat<T> result = *this;
+	return result -= otherMat;
+}
+template <typename T>
+inline Mat<T> Mat<T>::operator*(const Mat<T> &otherMat) const {
+	Mat<T> result(rows, otherMat.cols);
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < otherMat.cols; ++j) {
 			T newElement = 0;
-			for (size_t k = 0; k < COLS; ++k) {
-				newElement += elements[i][k] * otherMat.elements[k][j];
+			for (size_t k = 0; k < cols; ++k) {
+				newElement += elements[i][k] * otherMat(k, j);
 			}
-			newMat.elements[i][j] = newElement;
+			result(i, j) = newElement;
 		}
 	}
-	return newMat;
+	return result;
 }
-template<typename T, size_t ROWS, size_t COLS>
-inline Vec<T, ROWS> Mat<T, ROWS, COLS>::operator*(const Vec<T, COLS> &vec) const {
-	Vec<T, ROWS> newVec;
-	for (size_t i = 0; i < ROWS; ++i) {
+template <typename T>
+inline Vec<T> Mat<T>::operator*(const Vec<T> &vec) const {
+	Vec<T> result(rows);
+	for (size_t i = 0; i < rows; ++i) {
 		T newElement = 0;
-		for (size_t j = 0; j < COLS; ++j) {
-			newElement += elements[i][j] * vec.get(j);
+		for (size_t j = 0; j < cols; ++j) {
+			newElement += elements[i][j] * vec(j);
 		}
-		newVec.set(i, newElement);
+		result(i) = newElement;
 	}
-	return newVec;
+	return result;
 }
 
-template<typename T, size_t ROWS, size_t COLS>
-inline bool Mat<T, ROWS, COLS>::operator==(const Mat<T, ROWS, COLS> &otherMat) const {
-	for (size_t i = 0; i < ROWS; ++i) {
-		for (size_t j = 0; j < COLS; ++j) {
-			if (elements[i][j] != otherMat.elements[i][j]) {
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
-template<typename T, size_t ROWS, size_t COLS>
-inline std::ostream &operator<<(std::ostream &outputStream, const Mat<T, ROWS, COLS> &mat) {
+template <typename T>
+inline std::ostream &operator<<(std::ostream &outputStream, const Mat<T> &mat) {
 	outputStream << "[";
-	for (size_t i = 1; i <= ROWS; ++i) {
-		for (size_t j = 1; j <= COLS; ++j) {
-			outputStream << mat.get(i, j);
-			if (j < COLS) {
+	for (size_t i = 0; i < mat.rows; ++i) {
+		for (size_t j = 0; j < mat.cols; ++j) {
+			outputStream << mat.elements[i][j];
+			if (j < mat.cols - 1) {
 				outputStream << "  ";
 			}
 		}
-		if (i < ROWS) {
+		if (i < mat.rows - 1) {
 			outputStream << std::endl << " ";
 		}
 	}
@@ -134,27 +197,13 @@ inline std::ostream &operator<<(std::ostream &outputStream, const Mat<T, ROWS, C
 	return outputStream;
 }
 
-template <typename T, size_t ROWS, size_t COLS>
-inline T Mat<T, ROWS, COLS>::get(size_t row, size_t col) const {
-	return elements[row - 1][col - 1];
-}
-template <typename T, size_t ROWS, size_t COLS>
-inline const T *Mat<T, ROWS, COLS>::getPtr() const {
-	return &(elements[0][0]);
-}
-template<typename T, size_t ROWS, size_t COLS>
-inline void Mat<T, ROWS, COLS>::set(size_t row, size_t col, T newElement) {
-	elements[row - 1][col - 1] = newElement;
-}
-
-template<typename T, size_t ROWS, size_t COLS>
-inline Mat<T, COLS, ROWS> Mat<T, ROWS, COLS>::transpose() const {
-	T newElements[COLS][ROWS];
-	for (size_t i = 0; i < ROWS; ++i) {
-		for (size_t j = 0; j < COLS; ++j) {
-			newElements[j][i] = elements[i][j];
+template <typename T>
+inline Mat<T> Mat<T>::transpose() const {
+	Mat result(cols, rows);
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			result(j, i) = elements[i][j];
 		}
 	}
-	Mat<T, COLS, ROWS> newMat(newElements);
-	return newMat;
+	return result;
 }

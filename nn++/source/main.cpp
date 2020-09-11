@@ -1,3 +1,4 @@
+/*
 #include <array>
 #include <iostream>
 #include <random>
@@ -57,6 +58,42 @@ int main() {
 		x, y
 	);
 
+	std::cin.get();
+	return 0;
+}
+*/
+
+#include <iostream>
+
+#include "math/Vec.h"
+#include "math/Mat.h"
+
+int main() {
+	Mat<float> mat1(
+		{
+			{ 4.2f, 1.3f, 5.5f },
+			{ 9.7f, 1.1f, 2.6f },
+			{ 0.2f, 0.3f, 1.9f }
+		}
+	);
+	Mat<float> mat2(
+		{
+			{ 4.2f, 1.3f, 5.5f },
+			{ 9.7f, 1.1f, 2.6f },
+			{ 0.2f, 0.3f, 1.9f }
+		}
+	);
+	Vec<float> vec(
+		{ 1.0f, 2.0f, 3.0f }
+	);
+	Mat<float> mat3 = mat2;
+	Mat<float> mat4 = Mat<float>(5, 5, 2.5f);
+	std::cout << mat1 << "\n";
+	std::cout << mat3 << "\n";
+	std::cout << mat4 << "\n";
+	std::cout << vec << "\n";
+	std::cout << mat1 * vec << "\n";
+	std::cout << mat1 * mat2 << "\n";
 	std::cin.get();
 	return 0;
 }

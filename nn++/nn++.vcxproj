@@ -135,9 +135,6 @@
     <None Include="source\Loss.inl" />
     <None Include="source\math\Mat.inl" />
     <None Include="source\math\Vec.inl" />
-    <None Include="source\math\Vec_2.inl" />
-    <None Include="source\math\Vec_3.inl" />
-    <None Include="source\math\Vec_4.inl" />
     <None Include="source\Network.inl" />
   </ItemGroup>
   <ItemGroup>
@@ -146,9 +143,6 @@
     <ClInclude Include="include\Loss.h" />
     <ClInclude Include="include\math\Mat.h" />
     <ClInclude Include="include\math\Vec.h" />
-    <ClInclude Include="include\math\Vec_2.h" />
-    <ClInclude Include="include\math\Vec_3.h" />
-    <ClInclude Include="include\math\Vec_4.h" />
     <ClInclude Include="include\Network.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
