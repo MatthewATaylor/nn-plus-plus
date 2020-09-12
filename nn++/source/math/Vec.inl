@@ -11,10 +11,6 @@ template <typename T>
 inline Vec<T>::Vec(size_t size) {
 	this->size = size;
 	elements = new T[size];
-
-	for (size_t i = 0; i < size; ++i) {
-		elements[i] = 0;
-	}
 }
 template <typename T>
 inline Vec<T>::Vec(size_t size, T element) {
@@ -74,6 +70,7 @@ inline Vec<T> &Vec<T>::operator=(const Vec<T> &otherVec) {
 	for (size_t i = 0; i < size; ++i) {
 		elements[i] = otherVec(i);
 	}
+	return *this;
 }
 template <typename T>
 inline Vec<T> &Vec<T>::operator=(Vec<T> &&otherVec) {
@@ -81,6 +78,7 @@ inline Vec<T> &Vec<T>::operator=(Vec<T> &&otherVec) {
 	size = otherVec.size;
 	elements = otherVec.elements;
 	otherVec.elements = nullptr;
+	return *this;
 }
 template <typename T>
 inline Vec<T> &Vec<T>::operator+=(const Vec<T> &otherVec) {
@@ -112,28 +110,28 @@ inline Vec<T> &Vec<T>::operator/=(const Vec<T> &otherVec) {
 }
 
 template <typename T>
-inline Vec<T> &Vec<T>::operator+=(const T value) {
+inline Vec<T> &Vec<T>::operator+=(T value) {
 	for (size_t i = 0; i < size; ++i) {
 		elements[i] += value;
 	}
 	return *this;
 }
 template <typename T>
-inline Vec<T> &Vec<T>::operator-=(const T value) {
+inline Vec<T> &Vec<T>::operator-=(T value) {
 	for (size_t i = 0; i < size; ++i) {
 		elements[i] -= value;
 	}
 	return *this;
 }
 template <typename T>
-inline Vec<T> &Vec<T>::operator*=(const T value) {
+inline Vec<T> &Vec<T>::operator*=(T value) {
 	for (size_t i = 0; i < size; ++i) {
 		elements[i] *= value;
 	}
 	return *this;
 }
 template <typename T>
-inline Vec<T> &Vec<T>::operator/=(const T value) {
+inline Vec<T> &Vec<T>::operator/=(T value) {
 	for (size_t i = 0; i < size; ++i) {
 		elements[i] /= value;
 	}
@@ -162,22 +160,22 @@ inline Vec<T> Vec<T>::operator/(const Vec<T> &otherVec) const {
 }
 
 template <typename T>
-inline Vec<T> Vec<T>::operator+(const T value) const {
+inline Vec<T> Vec<T>::operator+(T value) const {
 	Vec<T> result = *this;
 	return result += value;
 }
 template <typename T>
-inline Vec<T> Vec<T>::operator-(const T value) const {
+inline Vec<T> Vec<T>::operator-(T value) const {
 	Vec<T> result = *this;
 	return result += value;
 }
 template <typename T>
-inline Vec<T> Vec<T>::operator*(const T value) const {
+inline Vec<T> Vec<T>::operator*(T value) const {
 	Vec<T> result = *this;
 	return result += value;
 }
 template <typename T>
-inline Vec<T> Vec<T>::operator/(const T value) const {
+inline Vec<T> Vec<T>::operator/(T value) const {
 	Vec<T> result = *this;
 	return result += value;
 }

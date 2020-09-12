@@ -26,6 +26,7 @@ public:
 	Mat(size_t rows, size_t cols);
 	Mat(size_t rows, size_t cols, T element);
 	Mat(std::initializer_list<std::initializer_list<T>> elements);
+	Mat(const Vec<T> &vec, bool colVec = true);
 	Mat(const Mat<T> &mat);
 	Mat(Mat<T> &&mat);
 
@@ -39,10 +40,20 @@ public:
 	Mat<T> &operator+=(const Mat<T> &otherMat);
 	Mat<T> &operator-=(const Mat<T> &otherMat);
 
+	Mat<T> &operator+=(T value);
+	Mat<T> &operator-=(T value);
+	Mat<T> &operator*=(T value);
+	Mat<T> &operator/=(T value);
+
 	Mat<T> operator+(const Mat<T> &otherMat) const;
 	Mat<T> operator-(const Mat<T> &otherMat) const;
 	Mat<T> operator*(const Mat<T> &otherMat) const;
 	Vec<T> operator*(const Vec<T> &vec) const;
+
+	Mat<T> operator+(T value);
+	Mat<T> operator-(T value);
+	Mat<T> operator*(T value);
+	Mat<T> operator/(T value);
 
 	friend std::ostream &operator<<<T>(std::ostream &outputStream, const Mat<T> &mat);
 

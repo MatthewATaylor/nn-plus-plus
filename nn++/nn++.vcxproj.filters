@@ -32,10 +32,25 @@
     <None Include="source\Dense.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="source\Activation.inl">
+    <None Include="source\activation\LinearActivation.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="source\Loss.inl">
+    <None Include="source\activation\ReLUActivation.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\activation\LeakyReLUActivation.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\activation\SigmoidActivation.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\activation\TanhActivation.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\loss\MeanSquaredErrorLoss.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\loss\CategoricalCrossEntropyLoss.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
@@ -52,10 +67,31 @@
     <ClInclude Include="include\Dense.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Activation.h">
+    <ClInclude Include="include\activation\Activation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Loss.h">
+    <ClInclude Include="include\activation\LinearActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\activation\ReLUActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\activation\LeakyReLUActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\activation\SigmoidActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\activation\TanhActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\loss\Loss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\loss\MeanSquaredErrorLoss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\loss\CategoricalCrossEntropyLoss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

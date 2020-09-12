@@ -2,27 +2,33 @@
 
 #include <random>
 
-#include "Activation.h"
+#include "activation/Activation.h"
 #include "math/Mat.h"
 
-template <size_t INPUT_SIZE, size_t UNITS, typename ActivationType>
 class Dense {
+private:
+	const Activation *activation = nullptr;
+
 public:
-	Mat<float, UNITS, INPUT_SIZE> weights;
-	Vec<float, UNITS> biases;
+	const size_t inputSize;
+	const size_t units;
+
+	Mat<float> weights; //rows: units, cols: input size
+
+	Vec<float> biases; //size: units
 	
-	Vec<float, UNITS> weightedInputs;
-	Vec<float, UNITS> activations;
+	Vec<float> weightedInputs; //size: units
+	Vec<float> activations; //size: units
 
-	Vec<float, UNITS> errors;
+	Vec<float> errors; //size: units
 
-	Dense();
+	Dense(size_t inputSize, size_t units, const Activation *activation);
 
 	//Sets layer weighted inputs and activations
-	void evaluate(const Vec<float, INPUT_SIZE> &input);
+	void evaluate(const Vec<float> &input);
 
 	//Returns derivative of activation function with respect to weighted inputs
-	Vec<float, UNITS> activationFuncDerivative();
+	Vec<float> activationFuncDerivative() const;
 };
 
 #include "../source/Dense.inl"

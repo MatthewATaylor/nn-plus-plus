@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -130,17 +130,29 @@
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="source\Activation.inl" />
+    <None Include="source\activation\LeakyReLUActivation.inl" />
+    <None Include="source\activation\LinearActivation.inl" />
+    <None Include="source\activation\ReLUActivation.inl" />
+    <None Include="source\activation\SigmoidActivation.inl" />
+    <None Include="source\activation\TanhActivation.inl" />
     <None Include="source\Dense.inl" />
-    <None Include="source\Loss.inl" />
+    <None Include="source\loss\CategoricalCrossEntropyLoss.inl" />
+    <None Include="source\loss\MeanSquaredErrorLoss.inl" />
     <None Include="source\math\Mat.inl" />
     <None Include="source\math\Vec.inl" />
     <None Include="source\Network.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Activation.h" />
+    <ClInclude Include="include\activation\Activation.h" />
+    <ClInclude Include="include\activation\LeakyReLUActivation.h" />
+    <ClInclude Include="include\activation\LinearActivation.h" />
+    <ClInclude Include="include\activation\ReLUActivation.h" />
+    <ClInclude Include="include\activation\SigmoidActivation.h" />
+    <ClInclude Include="include\activation\TanhActivation.h" />
     <ClInclude Include="include\Dense.h" />
-    <ClInclude Include="include\Loss.h" />
+    <ClInclude Include="include\loss\CategoricalCrossEntropyLoss.h" />
+    <ClInclude Include="include\loss\Loss.h" />
+    <ClInclude Include="include\loss\MeanSquaredErrorLoss.h" />
     <ClInclude Include="include\math\Mat.h" />
     <ClInclude Include="include\math\Vec.h" />
     <ClInclude Include="include\Network.h" />

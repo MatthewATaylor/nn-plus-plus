@@ -1,112 +1,79 @@
 #pragma once
 
-template <typename... LayerTypes>
-template <
-	size_t INPUT_SIZE, size_t OUTPUT_SIZE,
-	typename NextLayerType
->
-inline Vec<float, OUTPUT_SIZE> Network<LayerTypes...>::evaluate(
-	const Vec<float, INPUT_SIZE> &input,
-	NextLayerType *layer
+inline void Network::updateWeights(
+	size_t layerIndex, const Vec<float> &prevNodes, float learningRate
 ) {
-	layer->evaluate(input);
-	return layer->activations;
+	Mat<float> outputErrors(layers[layerIndex]->errors);
+	Mat<float> prevActivations = Mat<float>(prevNodes, false);
+	Mat<float> weightError = outputErrors * prevActivations;
+	layers[layerIndex]->weights -= weightError * learningRate;
 }
 
-template <typename... LayerTypes>
-template <
-	size_t INPUT_SIZE, size_t OUTPUT_SIZE,
-	typename NextLayerType, typename... OtherLayerTypes
->
-inline Vec<float, OUTPUT_SIZE> Network<LayerTypes...>::evaluate(
-	const Vec<float, INPUT_SIZE> &input,
-	NextLayerType *layer,
-	OtherLayerTypes*... otherLayers
-) {
-	layer->evaluate(input);
-	Vec<float, decltype(layer->weights)::rows> output = layer->activations;
-	return evaluate<decltype(layer->weights)::rows, OUTPUT_SIZE, OtherLayerTypes...>(
-		output, otherLayers...
-	);
+inline Network::Network() {}
+inline Network::Network(std::initializer_list<Dense*> layers) :
+	layers(layers) {}
+
+inline void Network::append(Dense *layer) {
+	layers.push_back(layer);
 }
 
-template <typename... LayerTypes>
-template <size_t LAYER_NUM>
-inline void Network<LayerTypes...>::backpropagateLayer() {
-	if constexpr (LAYER_NUM <= 0) {
+inline Vec<float> Network::evaluate(const Vec<float> &input) {
+	Vec<float> result = input;
+	for (size_t i = 0; i < layers.size(); ++i) {
+		layers[i]->evaluate(result);
+		result = layers[i]->activations;
+	}
+	return result;
+}
+
+inline float Network::getLoss(
+	const Vec<float> &input, const Vec<float> &target, const Loss *loss
+) {
+	Vec<float> prediction = evaluate(input);
+	return loss->func(target, prediction);
+}
+
+inline void Network::train(
+	const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
+	const Loss *loss, float learningRate, unsigned int epochs
+) {
+	if (layers.size() == 0) {
 		return;
 	}
-	
-	auto layer = std::get<LAYER_NUM>(layers);
-	auto nextLayer = std::get<LAYER_NUM>(layers);
-	auto weights = layer->weights.transpose();
-	auto errors = layer->errors;
-	auto nextErrors = weights * errors;
-	auto nextActivationFuncDerivative = nextLayer->activationFuncDerivative();
 
-	//Compute next layer's errors
-	//for (size_t i = 0; i < nextErrors::size; ++i) {
-	//	nextErrors.set(i, nextErrors.get(i) * nextActivationFuncDerivative.get(i));
-	//}
+	for (unsigned int epoch = 0; epoch < epochs; ++epoch) {
+		float totalLoss = 0.0f;
+		for (size_t i = 0; i < dataSize; ++i) {
+			//Evaluate all layers' activations and weighted inputs
+			Vec<float> prediction = evaluate(inputs[i]);
+			std::cout << inputs[i] << "    " << prediction << "\n";
+			totalLoss += loss->func(targets[i], prediction);
 
-	backpropagateLayer<LAYER_NUM - 1>();
-}
+			//Calculate output layer error
+			size_t outputLayerIndex = layers.size() - 1;
+			Dense *outputLayer = layers[outputLayerIndex];
+			outputLayer->errors = loss->derivative(targets[i], prediction);
+			outputLayer->errors *= outputLayer->activationFuncDerivative();
 
-template <typename... LayerTypes>
-template <
-	size_t INPUT_SIZE, size_t OUTPUT_SIZE, size_t BATCH_SIZE,
-	typename LossType
->
-inline void Network<LayerTypes...>::trainStep(
-	const std::array<Vec<float, INPUT_SIZE>, BATCH_SIZE> &x,
-	const std::array<Vec<float, OUTPUT_SIZE>, BATCH_SIZE> &y
-) {
+			//Backpropagate error
+			for (size_t j = layers.size() - 2; j != static_cast<size_t>(-1); --j) {
+				Dense *layer = layers[j];
+				Dense *prevLayer = layers[j + 1];
+				layer->errors = prevLayer->weights.transpose() * prevLayer->errors;
+				layer->errors *= layer->activationFuncDerivative();
+			}
 
-}
+			//Update initial layer weights and biases
+			updateWeights(0, inputs[i], learningRate);
+			layers[0]->biases -= layers[0]->errors * learningRate;
 
-template <typename... LayerTypes>
-inline Network<LayerTypes...>::Network(LayerTypes*... layers) {
-	this->layers = std::tuple<LayerTypes*...>(layers...);
-}
-
-template <typename... LayerTypes>
-template <size_t INPUT_SIZE, size_t OUTPUT_SIZE, typename LossType>
-inline float Network<LayerTypes...>::getLoss(
-	const Vec<float, INPUT_SIZE> &input,
-	const Vec<float, OUTPUT_SIZE> &target
-) {
-	Vec<float, OUTPUT_SIZE> prediction = std::apply(
-		evaluate<INPUT_SIZE, OUTPUT_SIZE, LayerTypes...>,
-		std::tuple_cat(std::make_tuple(input), layers)
-	);
-	return LossType::func(target, prediction);
-}
-
-template <typename... LayerTypes>
-template <
-	size_t NUM_INPUTS,
-	size_t INPUT_SIZE, size_t OUTPUT_SIZE, size_t BATCH_SIZE,
-	typename LossType
->
-inline void Network<LayerTypes...>::train(
-	const std::array<Vec<float, INPUT_SIZE>, NUM_INPUTS> &x,
-	const std::array<Vec<float, OUTPUT_SIZE>, NUM_INPUTS> &y
-) {
-	for (size_t i = 0; i < NUM_INPUTS; ++i) {
-		Vec<float, OUTPUT_SIZE> prediction = std::apply(
-			evaluate<INPUT_SIZE, OUTPUT_SIZE, LayerTypes...>,
-			std::tuple_cat(std::make_tuple(x[i]), layers)
-		);
-
-		//Compute error (dC/dz) of output layer
-		constexpr size_t numLayers = sizeof...(LayerTypes);
-		auto lastLayer = std::get<numLayers - 1>(layers);
-		lastLayer->errors = LossType::derivative(y[i], prediction);
-		Vec<float, OUTPUT_SIZE> outputActivationFuncDerivative = lastLayer->activationFuncDerivative();
-		for (size_t j = 0; j < OUTPUT_SIZE; ++j) {
-			lastLayer->errors.set(j, lastLayer->errors.get(j) * outputActivationFuncDerivative.get(j));
+			//Update other weights and biases
+			for (size_t i = 1; i < layers.size(); ++i) {
+				updateWeights(i, layers[i - 1]->activations, learningRate);
+				layers[i]->biases -= layers[i]->errors * learningRate;
+			}
 		}
-
-		backpropagateLayer<numLayers - 1>();
+		std::cout << "Epoch " << epoch << "\n";
+		std::cout << "    Loss: " << totalLoss / dataSize << "\n";
 	}
 }

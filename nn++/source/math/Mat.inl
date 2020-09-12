@@ -18,9 +18,6 @@ inline Mat<T>::Mat(size_t rows, size_t cols) {
 	elements = new T*[rows];
 	for (size_t i = 0; i < rows; ++i) {
 		elements[i] = new T[cols];
-		for (size_t j = 0; j < cols; ++j) {
-			elements[i][j] = 0;
-		}
 	}
 }
 template <typename T>
@@ -54,6 +51,26 @@ inline Mat<T>::Mat(std::initializer_list<std::initializer_list<T>> elements) {
 			++colNum;
 		}
 		++rowNum;
+	}
+}
+template <typename T>
+inline Mat<T>::Mat(const Vec<T> &vec, bool colVec) {
+	if (colVec) {
+		rows = vec.size;
+		cols = 1;
+	}
+	else {
+		rows = 1;
+		cols = vec.size;
+	}
+
+	elements = new T*[rows];
+		
+	for (size_t i = 0; i < rows; ++i) {
+		elements[i] = new T[cols];
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] = colVec ? vec(i) : vec(j);
+		}
 	}
 }
 template <typename T>
@@ -110,6 +127,8 @@ inline Mat<T> &Mat<T>::operator=(const Mat<T> &otherMat) {
 			elements[i][j] = otherMat(i, j);
 		}
 	}
+
+	return *this;
 }
 template <typename T>
 inline Mat<T> &Mat<T>::operator=(Mat<T> &&otherMat) {
@@ -122,6 +141,8 @@ inline Mat<T> &Mat<T>::operator=(Mat<T> &&otherMat) {
 	otherMat.rows = 0;
 	otherMat.cols = 0;
 	otherMat.elements = nullptr;
+
+	return *this;
 }
 template <typename T>
 inline Mat<T> &Mat<T>::operator+=(const Mat<T> &otherMat) {
@@ -137,6 +158,43 @@ inline Mat<T> &Mat<T>::operator-=(const Mat<T> &otherMat) {
 	for (size_t i = 0; i < rows; ++i) {
 		for (size_t j = 0; j < cols; ++j) {
 			elements[i][j] -= otherMat(i, j);
+		}
+	}
+	return *this;
+}
+
+template <typename T>
+inline Mat<T> &Mat<T>::operator+=(T value) {
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] += value;
+		}
+	}
+	return *this;
+}
+template <typename T>
+inline Mat<T> &Mat<T>::operator-=(T value) {
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] -= value;
+		}
+	}
+	return *this;
+}
+template <typename T>
+inline Mat<T> &Mat<T>::operator*=(T value) {
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] *= value;
+		}
+	}
+	return *this;
+}
+template <typename T>
+inline Mat<T> &Mat<T>::operator/=(T value) {
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			elements[i][j] /= value;
 		}
 	}
 	return *this;
@@ -177,6 +235,27 @@ inline Vec<T> Mat<T>::operator*(const Vec<T> &vec) const {
 		result(i) = newElement;
 	}
 	return result;
+}
+
+template <typename T>
+inline Mat<T> Mat<T>::operator+(T value) {
+	Mat<T> result = *this;
+	return result += value;
+}
+template <typename T>
+inline Mat<T> Mat<T>::operator-(T value) {
+	Mat<T> result = *this;
+	return result -= value;
+}
+template <typename T>
+inline Mat<T> Mat<T>::operator*(T value) {
+	Mat<T> result = *this;
+	return result *= value;
+}
+template <typename T>
+inline Mat<T> Mat<T>::operator/(T value) {
+	Mat<T> result = *this;
+	return result /= value;
 }
 
 template <typename T>

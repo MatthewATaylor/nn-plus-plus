@@ -38,20 +38,20 @@ public:
 	Vec<T> &operator*=(const Vec<T> &otherVec);
 	Vec<T> &operator/=(const Vec<T> &otherVec);
 
-	Vec<T> &operator+=(const T value);
-	Vec<T> &operator-=(const T value);
-	Vec<T> &operator*=(const T value);
-	Vec<T> &operator/=(const T value);
+	Vec<T> &operator+=(T value);
+	Vec<T> &operator-=(T value);
+	Vec<T> &operator*=(T value);
+	Vec<T> &operator/=(T value);
 
 	Vec<T> operator+(const Vec<T> &otherVec) const;
 	Vec<T> operator-(const Vec<T> &otherVec) const;
 	Vec<T> operator*(const Vec<T> &otherVec) const;
 	Vec<T> operator/(const Vec<T> &otherVec) const;
 
-	Vec<T> operator+(const T value) const;
-	Vec<T> operator-(const T value) const;
-	Vec<T> operator*(const T value) const;
-	Vec<T> operator/(const T value) const;
+	Vec<T> operator+(T value) const;
+	Vec<T> operator-(T value) const;
+	Vec<T> operator*(T value) const;
+	Vec<T> operator/(T value) const;
 
 	bool operator==(const Vec<T> &otherVec) const;
 
