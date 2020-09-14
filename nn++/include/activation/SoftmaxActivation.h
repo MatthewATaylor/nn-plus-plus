@@ -1,14 +1,15 @@
 #pragma once
 
+#include <cmath>
+#include <stdexcept>
+
 #include "Activation.h"
 #include "math/Vec.h"
 
-class ReLUActivation : public Activation {
+class SoftmaxActivation : public Activation {
 public:
-	ReLUActivation();
-
 	Vec<float> func(const Vec<float> &input) const override;
 	Vec<float> derivative(const Vec<float> &input) const override;
 };
 
-#include "../source/activation/ReLUActivation.inl"
+#include "../source/activation/SoftmaxActivation.inl"

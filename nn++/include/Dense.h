@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <random>
 
 #include "activation/Activation.h"
@@ -29,6 +30,8 @@ public:
 
 	//Returns derivative of activation function with respect to weighted inputs
 	Vec<float> activationFuncDerivative() const;
+
+	const Activation *getActivation() const;
 };
 
 #include "../source/Dense.inl"

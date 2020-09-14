@@ -127,15 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\examples\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="source\activation\Activation.inl" />
     <None Include="source\activation\LeakyReLUActivation.inl" />
     <None Include="source\activation\LinearActivation.inl" />
     <None Include="source\activation\ReLUActivation.inl" />
     <None Include="source\activation\SigmoidActivation.inl" />
+    <None Include="source\activation\SoftmaxActivation.inl" />
     <None Include="source\activation\TanhActivation.inl" />
     <None Include="source\Dense.inl" />
+    <None Include="source\loss\BinaryCrossEntropyLoss.inl" />
     <None Include="source\loss\CategoricalCrossEntropyLoss.inl" />
     <None Include="source\loss\MeanSquaredErrorLoss.inl" />
     <None Include="source\math\Mat.inl" />
@@ -148,14 +151,19 @@
     <ClInclude Include="include\activation\LinearActivation.h" />
     <ClInclude Include="include\activation\ReLUActivation.h" />
     <ClInclude Include="include\activation\SigmoidActivation.h" />
+    <ClInclude Include="include\activation\SoftmaxActivation.h" />
     <ClInclude Include="include\activation\TanhActivation.h" />
     <ClInclude Include="include\Dense.h" />
+    <ClInclude Include="include\loss\BinaryCrossEntropyLoss.h" />
     <ClInclude Include="include\loss\CategoricalCrossEntropyLoss.h" />
     <ClInclude Include="include\loss\Loss.h" />
     <ClInclude Include="include\loss\MeanSquaredErrorLoss.h" />
     <ClInclude Include="include\math\Mat.h" />
     <ClInclude Include="include\math\Vec.h" />
     <ClInclude Include="include\Network.h" />
+    <ClInclude Include="source\examples\addition\addition.h" />
+    <ClInclude Include="source\examples\classifier\classifier.h" />
+    <ClInclude Include="source\examples\mnist\mnist.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

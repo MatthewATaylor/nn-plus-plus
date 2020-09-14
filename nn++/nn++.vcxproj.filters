@@ -15,11 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="source\math\Mat.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -51,6 +46,15 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="source\loss\CategoricalCrossEntropyLoss.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\activation\Activation.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\activation\SoftmaxActivation.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\loss\BinaryCrossEntropyLoss.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
@@ -94,5 +98,25 @@
     <ClInclude Include="include\loss\CategoricalCrossEntropyLoss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\activation\SoftmaxActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\loss\BinaryCrossEntropyLoss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\examples\mnist\mnist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\examples\addition\addition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\examples\classifier\classifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\examples\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

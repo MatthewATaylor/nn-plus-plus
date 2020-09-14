@@ -1,5 +1,9 @@
 #pragma once
 
+inline ReLUActivation::ReLUActivation() {
+	weightFactor = 2.0f;
+}
+
 inline Vec<float> ReLUActivation::func(const Vec<float> &input) const {
 	Vec<float> activation(input.size);
 	for (size_t i = 0; i < input.size; ++i) {

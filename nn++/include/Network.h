@@ -2,10 +2,14 @@
 
 #include <vector>
 #include <initializer_list>
+#include <typeinfo>
+#include <stdexcept>
 #include <iostream>
 
 #include "Dense.h"
+#include "activation/SoftmaxActivation.h"
 #include "loss/Loss.h"
+#include "loss/CategoricalCrossEntropyLoss.h"
 #include "math/Mat.h"
 #include "math/Vec.h"
 
@@ -31,6 +35,8 @@ public:
 		const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
 		const Loss *loss, float learningRate, unsigned int epochs
 	);
+
+	void display() const;
 };
 
 #include "../source/Network.inl"

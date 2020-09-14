@@ -6,6 +6,7 @@ inline void Network::updateWeights(
 	Mat<float> outputErrors(layers[layerIndex]->errors);
 	Mat<float> prevActivations = Mat<float>(prevNodes, false);
 	Mat<float> weightError = outputErrors * prevActivations;
+
 	layers[layerIndex]->weights -= weightError * learningRate;
 }
 
@@ -41,19 +42,35 @@ inline void Network::train(
 		return;
 	}
 
+	size_t outputLayerIndex = layers.size() - 1;
+	Dense *outputLayer = layers[outputLayerIndex];
+	bool isSoftmaxOutput = false;
+
+	if (typeid(*outputLayer->getActivation()) == typeid(SoftmaxActivation)) {
+		isSoftmaxOutput = true;
+		if (typeid(*loss) != typeid(CategoricalCrossEntropyLoss)) {
+			throw std::exception(
+				"Categorical cross-entropy loss must be used with an output layer softmax activation."
+			);
+		}
+	}
+
 	for (unsigned int epoch = 0; epoch < epochs; ++epoch) {
 		float totalLoss = 0.0f;
 		for (size_t i = 0; i < dataSize; ++i) {
 			//Evaluate all layers' activations and weighted inputs
 			Vec<float> prediction = evaluate(inputs[i]);
-			std::cout << inputs[i] << "    " << prediction << "\n";
 			totalLoss += loss->func(targets[i], prediction);
 
 			//Calculate output layer error
-			size_t outputLayerIndex = layers.size() - 1;
-			Dense *outputLayer = layers[outputLayerIndex];
-			outputLayer->errors = loss->derivative(targets[i], prediction);
-			outputLayer->errors *= outputLayer->activationFuncDerivative();
+			if (isSoftmaxOutput) {
+				//Softmax special case: combine categorical and softmax derivatives
+				outputLayer->errors = prediction - targets[i];
+			}
+			else {
+				outputLayer->errors = loss->derivative(targets[i], prediction);
+				outputLayer->errors *= outputLayer->activationFuncDerivative();
+			}
 
 			//Backpropagate error
 			for (size_t j = layers.size() - 2; j != static_cast<size_t>(-1); --j) {
@@ -61,19 +78,34 @@ inline void Network::train(
 				Dense *prevLayer = layers[j + 1];
 				layer->errors = prevLayer->weights.transpose() * prevLayer->errors;
 				layer->errors *= layer->activationFuncDerivative();
+				std::cout << layer->errors << "\n";
 			}
+			//std::cin.get();
 
 			//Update initial layer weights and biases
 			updateWeights(0, inputs[i], learningRate);
 			layers[0]->biases -= layers[0]->errors * learningRate;
 
 			//Update other weights and biases
-			for (size_t i = 1; i < layers.size(); ++i) {
-				updateWeights(i, layers[i - 1]->activations, learningRate);
-				layers[i]->biases -= layers[i]->errors * learningRate;
+			for (size_t j = 1; j < layers.size(); ++j) {
+				updateWeights(j, layers[j - 1]->activations, learningRate);
+				layers[j]->biases -= layers[j]->errors * learningRate;
 			}
 		}
 		std::cout << "Epoch " << epoch << "\n";
 		std::cout << "    Loss: " << totalLoss / dataSize << "\n";
+		//display();
+		std::cin.get();
 	}
+}
+
+void Network::display() const {
+	for (size_t i = 0; i < layers.size(); ++i) {
+		std::cout << "Layer " << i << "\n";
+		std::cout << "Weights:\n";
+		std::cout << layers[i]->weights << "\n";
+		std::cout << "Biases:\n";
+		std::cout << layers[i]->biases << "\n\n";
+	}
+	std::cout << "\n";
 }

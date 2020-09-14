@@ -18,7 +18,7 @@ inline Vec<float> MeanSquaredErrorLoss::derivative(
 ) const {
 	Vec<float> derivatives(actual.size);
 	for (size_t i = 0; i < actual.size; ++i) {
-		derivatives(i) =  (2.0f / actual.size) * (actual(i) - prediction(i));
+		derivatives(i) =  (2.0f / actual.size) * (prediction(i) - actual(i));
 	}
 	return derivatives;
 }
