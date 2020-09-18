@@ -57,6 +57,12 @@
     <None Include="source\loss\BinaryCrossEntropyLoss.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="source\optimizer\SGDOptimizer.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\optimizer\MomentumOptimizer.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Mat.h">
@@ -111,6 +117,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\examples\classifier\classifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\optimizer\Optimizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\optimizer\SGDOptimizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\optimizer\MomentumOptimizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,7 @@ inline float CategoricalCrossEntropyLoss::func(
 ) const {
 	float lossTotal = 0.0f;
 	for (size_t i = 0; i < actual.size; ++i) {
-		lossTotal -= actual(i) * std::log(prediction(i));
+		lossTotal -= actual(i) * std::log(prediction(i) + 0.000000000000000000001f);
 	}
 	return lossTotal;
 }

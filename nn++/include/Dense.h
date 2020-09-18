@@ -23,6 +23,10 @@ public:
 
 	Vec<float> errors; //size: units
 
+	//For momentum optimizer
+	Mat<float> weightVelocity; //rows: units, cols: input size
+	Vec<float> biasVelocity; //size: units
+
 	Dense(size_t inputSize, size_t units, const Activation *activation);
 
 	//Sets layer weighted inputs and activations

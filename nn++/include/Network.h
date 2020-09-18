@@ -10,16 +10,13 @@
 #include "activation/SoftmaxActivation.h"
 #include "loss/Loss.h"
 #include "loss/CategoricalCrossEntropyLoss.h"
+#include "optimizer/Optimizer.h"
 #include "math/Mat.h"
 #include "math/Vec.h"
 
 class Network {
 private:
 	std::vector<Dense*> layers;
-
-	void updateWeights(
-		size_t layerIndex, const Vec<float> &prevNodes, float learningRate
-	);
 
 public:
 	Network();
@@ -33,7 +30,7 @@ public:
 	);
 	void train(
 		const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
-		const Loss *loss, float learningRate, unsigned int epochs
+		const Loss *loss, Optimizer *optimizer, unsigned int epochs
 	);
 
 	void display() const;

@@ -78,6 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Matth\Documents\Visual Studio 2017\Programs\C++ Programs\nn++\nn++\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +105,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Matth\Documents\Visual Studio 2017\Programs\C++ Programs\nn++\nn++\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +146,8 @@
     <None Include="source\math\Mat.inl" />
     <None Include="source\math\Vec.inl" />
     <None Include="source\Network.inl" />
+    <None Include="source\optimizer\MomentumOptimizer.inl" />
+    <None Include="source\optimizer\SGDOptimizer.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\activation\Activation.h" />
@@ -161,6 +165,9 @@
     <ClInclude Include="include\math\Mat.h" />
     <ClInclude Include="include\math\Vec.h" />
     <ClInclude Include="include\Network.h" />
+    <ClInclude Include="include\optimizer\MomentumOptimizer.h" />
+    <ClInclude Include="include\optimizer\Optimizer.h" />
+    <ClInclude Include="include\optimizer\SGDOptimizer.h" />
     <ClInclude Include="source\examples\addition\addition.h" />
     <ClInclude Include="source\examples\classifier\classifier.h" />
     <ClInclude Include="source\examples\mnist\mnist.h" />

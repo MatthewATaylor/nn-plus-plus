@@ -167,17 +167,17 @@ inline Vec<T> Vec<T>::operator+(T value) const {
 template <typename T>
 inline Vec<T> Vec<T>::operator-(T value) const {
 	Vec<T> result = *this;
-	return result += value;
+	return result -= value;
 }
 template <typename T>
 inline Vec<T> Vec<T>::operator*(T value) const {
 	Vec<T> result = *this;
-	return result += value;
+	return result *= value;
 }
 template <typename T>
 inline Vec<T> Vec<T>::operator/(T value) const {
 	Vec<T> result = *this;
-	return result += value;
+	return result /= value;
 }
 
 template <typename T>

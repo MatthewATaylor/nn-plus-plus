@@ -4,10 +4,9 @@
 #include <random>
 
 #include "activation/ReLUActivation.h"
-#include "activation/LeakyReLUActivation.h"
 #include "activation/SoftmaxActivation.h"
 #include "loss/CategoricalCrossEntropyLoss.h"
-#include "loss/MeanSquaredErrorLoss.h"
+#include "optimizer/MomentumOptimizer.h"
 #include "Dense.h"
 #include "Network.h"
 #include "math/Vec.h"
@@ -21,12 +20,14 @@ int main() {
 	Vec<float> inputs[DATA_SIZE];
 	Vec<float> targets[DATA_SIZE];
 
+	//_control87(_EM_INEXACT | _EM_UNDERFLOW | _EM_DENORMAL, _MCW_EM);
+
 	for (size_t i = 0; i < DATA_SIZE; ++i) {
 		std::random_device randomDevice;
 		std::mt19937 generator(randomDevice());
-		std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+		std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
-		float input = distribution(generator);
+		float input = (float) distribution(generator);
 
 		Vec<float> target(OUTPUT_SIZE);
 		if (input < 0.25f) {
@@ -47,11 +48,10 @@ int main() {
 	}
 
 	ReLUActivation relu;
-	LeakyReLUActivation leakyRelu;
 	SoftmaxActivation softmax;
 
-	Dense dense1(INPUT_SIZE, HIDDEN_UNITS, &leakyRelu);
-	Dense dense2(HIDDEN_UNITS, HIDDEN_UNITS, &leakyRelu);
+	Dense dense1(INPUT_SIZE, HIDDEN_UNITS, &relu);
+	Dense dense2(HIDDEN_UNITS, HIDDEN_UNITS, &relu);
 	Dense dense3(HIDDEN_UNITS, OUTPUT_SIZE, &softmax);
 
 	Network network{
@@ -61,7 +61,9 @@ int main() {
 	};
 
 	CategoricalCrossEntropyLoss loss;
-	network.train(inputs, targets, DATA_SIZE, &loss, 0.01f, 1000);
+	MomentumOptimizer optimizer(0.0075f, 0.9f);
+	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 5000);
+
 	std::cout << network.evaluate({ 0.1f }) << "\n";
 	std::cout << network.evaluate({ 0.2f }) << "\n";
 	std::cout << network.evaluate({ 0.3f }) << "\n";

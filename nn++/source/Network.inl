@@ -1,15 +1,5 @@
 #pragma once
 
-inline void Network::updateWeights(
-	size_t layerIndex, const Vec<float> &prevNodes, float learningRate
-) {
-	Mat<float> outputErrors(layers[layerIndex]->errors);
-	Mat<float> prevActivations = Mat<float>(prevNodes, false);
-	Mat<float> weightError = outputErrors * prevActivations;
-
-	layers[layerIndex]->weights -= weightError * learningRate;
-}
-
 inline Network::Network() {}
 inline Network::Network(std::initializer_list<Dense*> layers) :
 	layers(layers) {}
@@ -36,7 +26,7 @@ inline float Network::getLoss(
 
 inline void Network::train(
 	const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
-	const Loss *loss, float learningRate, unsigned int epochs
+	const Loss *loss, Optimizer *optimizer, unsigned int epochs
 ) {
 	if (layers.size() == 0) {
 		return;
@@ -78,24 +68,23 @@ inline void Network::train(
 				Dense *prevLayer = layers[j + 1];
 				layer->errors = prevLayer->weights.transpose() * prevLayer->errors;
 				layer->errors *= layer->activationFuncDerivative();
-				std::cout << layer->errors << "\n";
 			}
-			//std::cin.get();
 
 			//Update initial layer weights and biases
-			updateWeights(0, inputs[i], learningRate);
-			layers[0]->biases -= layers[0]->errors * learningRate;
+			optimizer->updateLayer(layers[0], inputs[i]);
 
 			//Update other weights and biases
 			for (size_t j = 1; j < layers.size(); ++j) {
-				updateWeights(j, layers[j - 1]->activations, learningRate);
-				layers[j]->biases -= layers[j]->errors * learningRate;
+				optimizer->updateLayer(layers[j], layers[j - 1]->activations);
 			}
+
+			//display();
+			//std::cin.get();
 		}
 		std::cout << "Epoch " << epoch << "\n";
 		std::cout << "    Loss: " << totalLoss / dataSize << "\n";
 		//display();
-		std::cin.get();
+		//std::cin.get();
 	}
 }
 
@@ -105,7 +94,9 @@ void Network::display() const {
 		std::cout << "Weights:\n";
 		std::cout << layers[i]->weights << "\n";
 		std::cout << "Biases:\n";
-		std::cout << layers[i]->biases << "\n\n";
+		std::cout << layers[i]->biases << "\n";
+		std::cout << "Errors:\n";
+		std::cout << layers[i]->errors << "\n\n";
 	}
 	std::cout << "\n";
 }

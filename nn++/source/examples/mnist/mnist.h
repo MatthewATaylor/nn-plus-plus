@@ -1,62 +1,102 @@
 #pragma once
 
-#include <array>
 #include <iostream>
-#include <random>
+#include <fstream>
+#include <string>
 
 #include "activation/ReLUActivation.h"
-#include "activation/LinearActivation.h"
 #include "activation/SoftmaxActivation.h"
-#include "loss/MeanSquaredErrorLoss.h"
+#include "loss/CategoricalCrossEntropyLoss.h"
+#include "optimizer/MomentumOptimizer.h"
 #include "Dense.h"
 #include "Network.h"
 #include "math/Vec.h"
 
-int main() {
-	const size_t DATA_SIZE = 500;
-	const size_t INPUT_SIZE = 2;
-	const size_t OUTPUT_SIZE = 1;
-	const size_t HIDDEN_UNITS = 32;
-	const size_t BATCH_SIZE = 10;
+const size_t IMG_SIZE = 28;
+const size_t IMG_PIXELS = IMG_SIZE * IMG_SIZE;
+const size_t NUM_LABELS = 10;
 
-	Vec<float> inputs[DATA_SIZE];
-	Vec<float> targets[DATA_SIZE];
+void loadImages(Vec<float> *images, size_t numImages, const std::string &path) {
+	std::ifstream fin(path, std::ios::in | std::ios::binary);
+	fin.seekg(16);
 
-	for (size_t i = 0; i < DATA_SIZE; ++i) {
-		std::random_device randomDevice;
-		std::mt19937 generator(randomDevice());
-		std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
-
-		float num1 = distribution(generator);
-		float num2 = distribution(generator);
-		float sum = num1 + num2;
-
-		inputs[i] = { num1, num2 };
-		targets[i] = { sum };
+	for (size_t i = 0; i < numImages; ++i) {
+		for (size_t j = 0; j < IMG_PIXELS; ++j) {
+			unsigned char pixel;
+			fin.read(reinterpret_cast<char*>(&pixel), 1);
+			images[i](j) = static_cast<float>(pixel) / 255.0f;
+		}
 	}
+}
 
+void loadLabels(Vec<float> *labels, size_t numLabels, const std::string &path) {
+	std::ifstream fin(path, std::ios::in | std::ios::binary);
+	fin.seekg(8);
+
+	for (size_t i = 0; i < numLabels; ++i) {
+		unsigned char label;
+		fin.read(reinterpret_cast<char*>(&label), 1);
+		labels[i](label) = 1.0f;
+	}
+}
+
+int main() {
+	const size_t TRAIN_SIZE = 1000;
+	const size_t TEST_SIZE = 10;
+	const std::string DATA_DIR = "../nn++/source/examples/mnist/data";
+
+	std::cout << "Loading data...\n";
+
+	//Load images
+	Vec<float> *trainImages = new Vec<float>[TRAIN_SIZE];
+	for (size_t i = 0; i < TRAIN_SIZE; ++i) {
+		trainImages[i] = Vec<float>(IMG_PIXELS);
+	}
+	Vec<float> *testImages = new Vec<float>[TEST_SIZE];
+	for (size_t i = 0; i < TEST_SIZE; ++i) {
+		testImages[i] = Vec<float>(IMG_PIXELS);
+	}
+	loadImages(trainImages, TRAIN_SIZE, DATA_DIR + "/train-images.idx3-ubyte");
+	loadImages(testImages, TEST_SIZE, DATA_DIR + "/test-images.idx3-ubyte");
+
+	//Load labels
+	Vec<float> *trainLabels = new Vec<float>[TRAIN_SIZE];
+	for (size_t i = 0; i < TRAIN_SIZE; ++i) {
+		trainLabels[i] = Vec<float>(NUM_LABELS, 0.0f);
+	}
+	Vec<float> *testLabels = new Vec<float>[TEST_SIZE];
+	for (size_t i = 0; i < TEST_SIZE; ++i) {
+		testLabels[i] = Vec<float>(NUM_LABELS, 0.0f);
+	}
+	loadLabels(trainLabels, TRAIN_SIZE, DATA_DIR + "/train-labels.idx1-ubyte");
+	loadLabels(testLabels, TEST_SIZE, DATA_DIR + "/test-labels.idx1-ubyte");
+
+	//Generate model
 	ReLUActivation relu;
-	LinearActivation linear;
+	SoftmaxActivation softmax;
 
-	//Dense dense1(INPUT_SIZE, HIDDEN_UNITS, &relu);
-	//Dense dense2(HIDDEN_UNITS, HIDDEN_UNITS, &relu);
-	//Dense dense3(HIDDEN_UNITS, OUTPUT_SIZE, &linear);
+	Dense dense1(IMG_PIXELS, 32, &relu);
+	Dense dense2(32, 64, &relu);
+	Dense dense3(64, NUM_LABELS, &softmax);
 
-	//Network network {
-	//	&dense1,
-	//	&dense2,
-	//	&dense3
-	//};
-
-	Dense dense1(INPUT_SIZE, OUTPUT_SIZE, &linear);
-	//Dense dense2(HIDDEN_UNITS, OUTPUT_SIZE, &linear);
 	Network network{
 		&dense1,
-		//&dense2
+		&dense2,
+		&dense3
 	};
 
-	MeanSquaredErrorLoss loss;
-	network.train(inputs, targets, DATA_SIZE, &loss, 0.0000000001f, 10000);
+	CategoricalCrossEntropyLoss loss;
+	MomentumOptimizer optimizer(0.001f, 0.9f);
+
+	std::cout << "\nTraining model...\n";
+	network.train(trainImages, trainLabels, TRAIN_SIZE, &loss, &optimizer, 25);
+
+	std::cout << "\nMaking predictions...\n";
+	for (size_t i = 0; i < TEST_SIZE; ++i) {
+		std::cout << "Prediction: " << network.evaluate(testImages[i]) << "\n";
+		std::cout << "Target: " << testLabels[i] << "\n";
+		std::cin.get();
+	}
 
 	std::cin.get();
 	return 0;

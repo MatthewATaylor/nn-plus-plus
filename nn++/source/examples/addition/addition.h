@@ -3,9 +3,9 @@
 #include <iostream>
 #include <random>
 
-#include "activation/ReLUActivation.h"
 #include "activation/LinearActivation.h"
 #include "loss/MeanSquaredErrorLoss.h"
+#include "optimizer/MomentumOptimizer.h"
 #include "Dense.h"
 #include "Network.h"
 #include "math/Vec.h"
@@ -14,7 +14,6 @@ int main() {
 	const size_t DATA_SIZE = 500;
 	const size_t INPUT_SIZE = 2;
 	const size_t OUTPUT_SIZE = 1;
-	const size_t HIDDEN_UNITS = 4;
 
 	Vec<float> inputs[DATA_SIZE];
 	Vec<float> targets[DATA_SIZE];
@@ -32,21 +31,21 @@ int main() {
 		targets[i] = { sum };
 	}
 
-	ReLUActivation relu;
 	LinearActivation linear;
 
-	Dense dense1(INPUT_SIZE, HIDDEN_UNITS, &relu);
-	Dense dense2(HIDDEN_UNITS, HIDDEN_UNITS, &relu);
-	Dense dense3(HIDDEN_UNITS, OUTPUT_SIZE, &linear);
-
-	Network network {
-		&dense1,
-		&dense2,
-		&dense3
-	};
+	Dense dense(INPUT_SIZE, OUTPUT_SIZE, &linear);
+	Network network{ &dense };
 
 	MeanSquaredErrorLoss loss;
-	network.train(inputs, targets, DATA_SIZE, &loss, 0.00000000001f, 2);
+	MomentumOptimizer optimizer(0.001f, 0.9f);
+	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 100);
+
+	std::cout << network.evaluate({ 0.1f, 0.3f }) << "\n";
+	std::cout << network.evaluate({ 0.4f, 0.22f }) << "\n";
+	std::cout << network.evaluate({ 0.25f, 0.7f }) << "\n";
+	std::cout << network.evaluate({ 0.0f, 0.0f }) << "\n";
+	std::cout << network.evaluate({ 5.0f, 12.5f }) << "\n";
+	std::cout << network.evaluate({ 10.6f, 9.8f }) << "\n";
 
 	std::cin.get();
 	return 0;
