@@ -71,11 +71,11 @@ inline void Network::train(
 			}
 
 			//Update initial layer weights and biases
-			optimizer->updateLayer(layers[0], inputs[i]);
+			optimizer->updateLayer(layers[0], inputs[i], epoch + 1);
 
 			//Update other weights and biases
 			for (size_t j = 1; j < layers.size(); ++j) {
-				optimizer->updateLayer(layers[j], layers[j - 1]->activations);
+				optimizer->updateLayer(layers[j], layers[j - 1]->activations, epoch + 1);
 			}
 
 			//display();

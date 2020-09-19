@@ -11,7 +11,7 @@ private:
 
 public:
 	SGDOptimizer(float learningRate);
-	void updateLayer(Dense *layer, const Vec<float> &prevNodes) override;
+	void updateLayer(Dense *layer, const Vec<float> &prevNodes, unsigned int timestep) override;
 };
 
 #include "../source/optimizer/SGDOptimizer.inl"

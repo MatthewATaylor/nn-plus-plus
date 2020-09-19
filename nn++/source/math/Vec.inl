@@ -223,3 +223,13 @@ template <typename T>
 inline T Vec<T>::mag() const {
 	return std::sqrt(magSquared());
 }
+
+template <typename T>
+template <typename U>
+inline Vec<T> Vec<T>::pow(U power) const {
+	Vec<T> result = *this;
+	for (size_t i = 0; i < size; ++i) {
+		result(i) = std::pow(result(i), power);
+	}
+	return result;
+}

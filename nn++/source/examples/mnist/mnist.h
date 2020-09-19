@@ -7,7 +7,7 @@
 #include "activation/ReLUActivation.h"
 #include "activation/SoftmaxActivation.h"
 #include "loss/CategoricalCrossEntropyLoss.h"
-#include "optimizer/MomentumOptimizer.h"
+#include "optimizer/AdamOptimizer.h"
 #include "Dense.h"
 #include "Network.h"
 #include "math/Vec.h"
@@ -86,7 +86,7 @@ int main() {
 	};
 
 	CategoricalCrossEntropyLoss loss;
-	MomentumOptimizer optimizer(0.001f, 0.9f);
+	AdamOptimizer optimizer;
 
 	std::cout << "\nTraining model...\n";
 	network.train(trainImages, trainLabels, TRAIN_SIZE, &loss, &optimizer, 25);

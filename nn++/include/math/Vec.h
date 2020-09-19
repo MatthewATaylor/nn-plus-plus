@@ -60,6 +60,9 @@ public:
 	T dot(const Vec<T> &otherVec) const;
 	T magSquared() const;
 	T mag() const;
+
+	template <typename U>
+	Vec<T> pow(U power) const;
 };
 
 #include "../../source/math/Vec.inl"

@@ -286,3 +286,26 @@ inline Mat<T> Mat<T>::transpose() const {
 	}
 	return result;
 }
+
+template <typename T>
+template <typename U>
+inline Mat<T> Mat<T>::powByElements(U power) const {
+	Mat<T> result = *this;
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			result(i, j) = std::pow(result(i, j), power);
+		}
+	}
+	return result;
+}
+
+template <typename T>
+inline Mat<T> Mat<T>::divideByElements(const Mat<T> &otherMat) const {
+	Mat<T> result = *this;
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < cols; ++j) {
+			result(i, j) /= otherMat(i, j);
+		}
+	}
+	return result;
+}

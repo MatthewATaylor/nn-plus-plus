@@ -6,7 +6,7 @@
 #include "activation/ReLUActivation.h"
 #include "activation/SoftmaxActivation.h"
 #include "loss/CategoricalCrossEntropyLoss.h"
-#include "optimizer/MomentumOptimizer.h"
+#include "optimizer/AdamOptimizer.h"
 #include "Dense.h"
 #include "Network.h"
 #include "math/Vec.h"
@@ -19,8 +19,6 @@ int main() {
 
 	Vec<float> inputs[DATA_SIZE];
 	Vec<float> targets[DATA_SIZE];
-
-	//_control87(_EM_INEXACT | _EM_UNDERFLOW | _EM_DENORMAL, _MCW_EM);
 
 	for (size_t i = 0; i < DATA_SIZE; ++i) {
 		std::random_device randomDevice;
@@ -61,8 +59,8 @@ int main() {
 	};
 
 	CategoricalCrossEntropyLoss loss;
-	MomentumOptimizer optimizer(0.0075f, 0.9f);
-	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 5000);
+	AdamOptimizer optimizer;
+	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 100);
 
 	std::cout << network.evaluate({ 0.1f }) << "\n";
 	std::cout << network.evaluate({ 0.2f }) << "\n";

@@ -146,7 +146,9 @@
     <None Include="source\math\Mat.inl" />
     <None Include="source\math\Vec.inl" />
     <None Include="source\Network.inl" />
+    <None Include="source\optimizer\AdamOptimizer.inl" />
     <None Include="source\optimizer\MomentumOptimizer.inl" />
+    <None Include="source\optimizer\RMSPropOptimizer.inl" />
     <None Include="source\optimizer\SGDOptimizer.inl" />
   </ItemGroup>
   <ItemGroup>
@@ -165,8 +167,10 @@
     <ClInclude Include="include\math\Mat.h" />
     <ClInclude Include="include\math\Vec.h" />
     <ClInclude Include="include\Network.h" />
+    <ClInclude Include="include\optimizer\AdamOptimizer.h" />
     <ClInclude Include="include\optimizer\MomentumOptimizer.h" />
     <ClInclude Include="include\optimizer\Optimizer.h" />
+    <ClInclude Include="include\optimizer\RMSPropOptimizer.h" />
     <ClInclude Include="include\optimizer\SGDOptimizer.h" />
     <ClInclude Include="source\examples\addition\addition.h" />
     <ClInclude Include="source\examples\classifier\classifier.h" />

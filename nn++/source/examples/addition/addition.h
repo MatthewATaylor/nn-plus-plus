@@ -5,7 +5,7 @@
 
 #include "activation/LinearActivation.h"
 #include "loss/MeanSquaredErrorLoss.h"
-#include "optimizer/MomentumOptimizer.h"
+#include "optimizer/AdamOptimizer.h"
 #include "Dense.h"
 #include "Network.h"
 #include "math/Vec.h"
@@ -37,7 +37,7 @@ int main() {
 	Network network{ &dense };
 
 	MeanSquaredErrorLoss loss;
-	MomentumOptimizer optimizer(0.001f, 0.9f);
+	AdamOptimizer optimizer;
 	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 100);
 
 	std::cout << network.evaluate({ 0.1f, 0.3f }) << "\n";

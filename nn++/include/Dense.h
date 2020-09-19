@@ -23,9 +23,13 @@ public:
 
 	Vec<float> errors; //size: units
 
-	//For momentum optimizer
-	Mat<float> weightVelocity; //rows: units, cols: input size
-	Vec<float> biasVelocity; //size: units
+	//For momentum
+	Mat<float> weightV; //rows: units, cols: input size
+	Vec<float> biasV; //size: units
+
+	//For RMSProp
+	Mat<float> weightS; //rows: units, cols: input size
+	Vec<float> biasS; //size: units
 
 	Dense(size_t inputSize, size_t units, const Activation *activation);
 

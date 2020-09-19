@@ -63,6 +63,12 @@
     <None Include="source\optimizer\MomentumOptimizer.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="source\optimizer\RMSPropOptimizer.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\optimizer\AdamOptimizer.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Mat.h">
@@ -126,6 +132,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\optimizer\MomentumOptimizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\optimizer\RMSPropOptimizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\optimizer\AdamOptimizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

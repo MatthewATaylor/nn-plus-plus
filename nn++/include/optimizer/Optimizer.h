@@ -5,5 +5,5 @@
 
 class Optimizer {
 public:
-	virtual void updateLayer(Dense *layer, const Vec<float> &prevNodes) = 0;
+	virtual void updateLayer(Dense *layer, const Vec<float> &prevNodes, unsigned int timestep) = 0;
 };

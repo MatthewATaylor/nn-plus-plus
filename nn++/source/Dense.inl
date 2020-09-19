@@ -4,7 +4,8 @@ inline Dense::Dense(size_t inputSize, size_t units, const Activation *activation
 	activation(activation), inputSize(inputSize), units(units),
 	weights(units, inputSize), biases(units, 0.0f), weightedInputs(units),
 	activations(units), errors(units),
-	weightVelocity(units, inputSize, 0.0f), biasVelocity(units, 0.0f) {
+	weightV(units, inputSize, 0.0f), biasV(units, 0.0f),
+	weightS(units, inputSize, 0.0f), biasS(units, 0.0f) {
 
 	//Randomly initialize weights
 	std::random_device randomDevice;

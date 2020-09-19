@@ -8,7 +8,7 @@ inline Vec<float> SoftmaxActivation::func(const Vec<float> &input) const {
 
 	Vec<float> activation(input.size);
 	for (size_t i = 0; i < input.size; ++i) {
-		activation(i) = std::exp(input(i)) / exponentialSum;
+		activation(i) = std::exp(input(i)) / (exponentialSum + 0.000000001f);
 	}
 
 	return activation;

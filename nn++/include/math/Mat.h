@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <ostream>
 #include <initializer_list>
 
@@ -58,6 +59,11 @@ public:
 	friend std::ostream &operator<<<T>(std::ostream &outputStream, const Mat<T> &mat);
 
 	Mat<T> transpose() const;
+
+	template <typename U>
+	Mat<T> powByElements(U power) const;
+	
+	Mat<T> divideByElements(const Mat<T> &otherMat) const;
 };
 
 #include "../../source/math/Mat.inl"
