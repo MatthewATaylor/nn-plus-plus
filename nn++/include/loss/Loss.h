@@ -1,14 +1,14 @@
 #pragma once
 
-#include "math/Vec.h"
+#include "math/Mat.h"
 
 class Loss {
 public:
 	virtual float func(
-		const Vec<float> &actual, const Vec<float> &prediction
+		const Mat<float> &actual, const Mat<float> &prediction
 	) const = 0;
 
-	virtual Vec<float> derivative(
-		const Vec<float> &actual, const Vec<float> &prediction
+	virtual Mat<float> derivative(
+		const Mat<float> &actual, const Mat<float> &prediction
 	) const = 0;
 };

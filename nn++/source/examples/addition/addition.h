@@ -38,14 +38,12 @@ int main() {
 
 	MeanSquaredErrorLoss loss;
 	AdamOptimizer optimizer;
-	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 100);
+	network.train(inputs, targets, DATA_SIZE, &loss, &optimizer, 1000);
 
-	std::cout << network.evaluate({ 0.1f, 0.3f }) << "\n";
-	std::cout << network.evaluate({ 0.4f, 0.22f }) << "\n";
-	std::cout << network.evaluate({ 0.25f, 0.7f }) << "\n";
-	std::cout << network.evaluate({ 0.0f, 0.0f }) << "\n";
-	std::cout << network.evaluate({ 5.0f, 12.5f }) << "\n";
-	std::cout << network.evaluate({ 10.6f, 9.8f }) << "\n";
+	std::cout << "\n";
+	std::cout << "1 + 1 = " << network.evaluate({ { 1.0f }, { 1.0f } })(0, 0) << "\n";
+	std::cout << "25 + 6 = " << network.evaluate({ { 25.0f }, { 6.0f } })(0, 0) << "\n";
+	std::cout << "0.2 + 0.12 = " << network.evaluate({ { 0.2f }, { 0.12f } })(0, 0) << "\n";
 
 	std::cin.get();
 	return 0;

@@ -4,12 +4,13 @@
 #include <stdexcept>
 
 #include "Activation.h"
+#include "math/Mat.h"
 #include "math/Vec.h"
 
 class SoftmaxActivation : public Activation {
 public:
-	Vec<float> func(const Vec<float> &input) const override;
-	Vec<float> derivative(const Vec<float> &input) const override;
+	Mat<float> func(const Mat<float> &input) const override;
+	Mat<float> derivative(const Mat<float> &input) const override;
 };
 
 #include "../source/activation/SoftmaxActivation.inl"

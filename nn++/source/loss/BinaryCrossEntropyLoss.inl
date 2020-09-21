@@ -1,19 +1,25 @@
 #pragma once
 
 inline float BinaryCrossEntropyLoss::func(
-	const Vec<float> &actual, const Vec<float> &prediction
+	const Mat<float> &actual, const Mat<float> &prediction
 ) const {
-	return
-		-actual(0) * std::log(prediction(0) + 0.000000000000000000001f) -
-		(1.0f - actual(0)) * std::log(1.0f - prediction(0) + 0.000000000000000000001f);
+	float totalLoss = 0.0f;
+	for (size_t i = 0; i < actual.cols; ++i) { //For each input in batch
+		totalLoss +=
+			-actual(0, i) * std::log(prediction(0, i) + 0.0000000001f) -
+			(1.0f - actual(0, i)) * std::log(1.0f - prediction(0, i) + 0.0000000001f);
+	}
+	return totalLoss / actual.cols;
 }
 
-inline Vec<float> BinaryCrossEntropyLoss::derivative(
-	const Vec<float> &actual, const Vec<float> &prediction
+inline Mat<float> BinaryCrossEntropyLoss::derivative(
+	const Mat<float> &actual, const Mat<float> &prediction
 ) const {
-	return Vec<float>(
-		1,
-		-actual(0) / prediction(0) +
-			(1.0f - actual(0)) / (1.0f - prediction(0))
-	);
+	Mat<float> derivatives(1, actual.cols);
+	for (size_t i = 0; i < actual.cols; ++i) {
+		derivatives(0, i) =
+			-actual(0, i) / prediction(0, i) +
+			(1.0f - actual(0, i)) / (1.0f - prediction(0, i));
+	}
+	return derivatives;
 }

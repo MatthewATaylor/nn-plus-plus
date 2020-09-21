@@ -18,10 +18,10 @@ public:
 
 	Vec<float> biases; //size: units
 	
-	Vec<float> weightedInputs; //size: units
-	Vec<float> activations; //size: units
+	Mat<float> weightedInputs; //rows: units, cols: batch size
+	Mat<float> activations; //rows: units, cols: batch size
 
-	Vec<float> errors; //size: units
+	Mat<float> errors; //rows: units, cols: batch size
 
 	//For momentum
 	Mat<float> weightV; //rows: units, cols: input size
@@ -34,10 +34,12 @@ public:
 	Dense(size_t inputSize, size_t units, const Activation *activation);
 
 	//Sets layer weighted inputs and activations
-	void evaluate(const Vec<float> &input);
+	//input rows: input size, cols: batch size
+	void evaluate(const Mat<float> &input);
 
 	//Returns derivative of activation function with respect to weighted inputs
-	Vec<float> activationFuncDerivative() const;
+	//output rows: units, cols: batch size
+	Mat<float> activationFuncDerivative() const;
 
 	const Activation *getActivation() const;
 };

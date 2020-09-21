@@ -12,7 +12,7 @@ private:
 
 public:
 	MomentumOptimizer(float learningRate = 0.001f, float beta = 0.9f);
-	void updateLayer(Dense *layer, const Vec<float> &prevNodes, unsigned int timestep) override;
+	void updateLayer(Dense *layer, const Mat<float> &prevNodes, unsigned int timestep) override;
 };
 
 #include "../source/optimizer/MomentumOptimizer.inl"

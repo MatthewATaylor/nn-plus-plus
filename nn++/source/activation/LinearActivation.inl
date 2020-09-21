@@ -1,9 +1,9 @@
 #pragma once
 
-inline Vec<float> LinearActivation::func(const Vec<float> &input) const {
+inline Mat<float> LinearActivation::func(const Mat<float> &input) const {
 	return input;
 }
 
-inline Vec<float> LinearActivation::derivative(const Vec<float> &input) const {
-	return Vec<float>(input.size, 1.0f);
+inline Mat<float> LinearActivation::derivative(const Mat<float> &input) const {
+	return Mat<float>(input.rows, input.cols, 1.0f);
 }

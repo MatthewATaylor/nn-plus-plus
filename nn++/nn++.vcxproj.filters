@@ -140,6 +140,9 @@
     <ClInclude Include="include\optimizer\AdamOptimizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\nnpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\examples\main.cpp">

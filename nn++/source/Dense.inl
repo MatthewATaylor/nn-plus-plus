@@ -2,8 +2,7 @@
 
 inline Dense::Dense(size_t inputSize, size_t units, const Activation *activation) :
 	activation(activation), inputSize(inputSize), units(units),
-	weights(units, inputSize), biases(units, 0.0f), weightedInputs(units),
-	activations(units), errors(units),
+	weights(units, inputSize), biases(units, 0.0f),
 	weightV(units, inputSize, 0.0f), biasV(units, 0.0f),
 	weightS(units, inputSize, 0.0f), biasS(units, 0.0f) {
 
@@ -19,12 +18,20 @@ inline Dense::Dense(size_t inputSize, size_t units, const Activation *activation
 	}
 }
 
-inline void Dense::evaluate(const Vec<float> &input) {
-	weightedInputs = weights * input + biases;
+inline void Dense::evaluate(const Mat<float> &input) {
+	weightedInputs = weights * input;
+
+	//Add biases to each weighted input in batch
+	for (size_t i = 0; i < weightedInputs.rows; ++i) {
+		for (size_t j = 0; j < weightedInputs.cols; ++j) {
+			weightedInputs(i, j) += biases(i);
+		}
+	}
+
 	activations = activation->func(weightedInputs);
 }
 
-inline Vec<float> Dense::activationFuncDerivative() const {
+inline Mat<float> Dense::activationFuncDerivative() const {
 	return activation->derivative(weightedInputs);
 }
 

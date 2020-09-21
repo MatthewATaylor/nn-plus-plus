@@ -8,8 +8,8 @@ inline void Network::append(Dense *layer) {
 	layers.push_back(layer);
 }
 
-inline Vec<float> Network::evaluate(const Vec<float> &input) {
-	Vec<float> result = input;
+inline Mat<float> Network::evaluate(const Mat<float> &inputBatch) {
+	Mat<float> result = inputBatch;
 	for (size_t i = 0; i < layers.size(); ++i) {
 		layers[i]->evaluate(result);
 		result = layers[i]->activations;
@@ -18,15 +18,16 @@ inline Vec<float> Network::evaluate(const Vec<float> &input) {
 }
 
 inline float Network::getLoss(
-	const Vec<float> &input, const Vec<float> &target, const Loss *loss
+	const Mat<float> &input, const Mat<float> &target, const Loss *loss
 ) {
-	Vec<float> prediction = evaluate(input);
+	Mat<float> prediction = evaluate(input);
 	return loss->func(target, prediction);
 }
 
 inline void Network::train(
 	const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
-	const Loss *loss, Optimizer *optimizer, unsigned int epochs
+	const Loss *loss, Optimizer *optimizer, unsigned int epochs,
+	size_t batchSize, bool shuffle
 ) {
 	if (layers.size() == 0) {
 		return;
@@ -45,21 +46,49 @@ inline void Network::train(
 		}
 	}
 
+	size_t *indices = new size_t[dataSize];
+	for (size_t i = 0; i < dataSize; ++i) {
+		indices[i] = i;
+	}
+
 	for (unsigned int epoch = 0; epoch < epochs; ++epoch) {
+		if (shuffle) {
+			std::random_device randomDevice;
+			std::mt19937 generator(randomDevice());
+			std::shuffle(indices, indices + dataSize, generator);
+		}
+		
 		float totalLoss = 0.0f;
-		for (size_t i = 0; i < dataSize; ++i) {
+		for (size_t indexNum = 0; indexNum <= dataSize - batchSize; indexNum += batchSize) {
+			//Generate batched data
+			size_t inputSize = inputs[0].size;
+			size_t targetSize = targets[0].size;
+			Mat<float> inputBatch(inputSize, batchSize);
+			Mat<float> targetBatch(targetSize, batchSize);
+			for (size_t j = 0; j < batchSize; ++j) {
+				size_t i = indices[indexNum + j]; //Use potentially shuffled indices
+				for (size_t k = 0; k < inputSize; ++k) {
+					inputBatch(k, j) = inputs[i](k);
+				}
+				for (size_t k = 0; k < targetSize; ++k) {
+					targetBatch(k, j) = targets[i](k);
+				}
+			}
+
 			//Evaluate all layers' activations and weighted inputs
-			Vec<float> prediction = evaluate(inputs[i]);
-			totalLoss += loss->func(targets[i], prediction);
+			Mat<float> prediction = evaluate(inputBatch);
+			totalLoss += loss->func(targetBatch, prediction);
 
 			//Calculate output layer error
 			if (isSoftmaxOutput) {
 				//Softmax special case: combine categorical and softmax derivatives
-				outputLayer->errors = prediction - targets[i];
+				outputLayer->errors = prediction - targetBatch;
 			}
 			else {
-				outputLayer->errors = loss->derivative(targets[i], prediction);
-				outputLayer->errors *= outputLayer->activationFuncDerivative();
+				outputLayer->errors = loss->derivative(targetBatch, prediction);
+				outputLayer->errors = outputLayer->errors.multiplyByElements(
+					outputLayer->activationFuncDerivative()
+				);
 			}
 
 			//Backpropagate error
@@ -67,25 +96,25 @@ inline void Network::train(
 				Dense *layer = layers[j];
 				Dense *prevLayer = layers[j + 1];
 				layer->errors = prevLayer->weights.transpose() * prevLayer->errors;
-				layer->errors *= layer->activationFuncDerivative();
+				layer->errors = layer->errors.multiplyByElements(
+					layer->activationFuncDerivative()
+				);
 			}
 
 			//Update initial layer weights and biases
-			optimizer->updateLayer(layers[0], inputs[i], epoch + 1);
+			optimizer->updateLayer(layers[0], inputBatch, epoch + 1);
 
 			//Update other weights and biases
 			for (size_t j = 1; j < layers.size(); ++j) {
 				optimizer->updateLayer(layers[j], layers[j - 1]->activations, epoch + 1);
 			}
-
-			//display();
-			//std::cin.get();
 		}
+
 		std::cout << "Epoch " << epoch << "\n";
 		std::cout << "    Loss: " << totalLoss / dataSize << "\n";
-		//display();
-		//std::cin.get();
 	}
+
+	delete[] indices;
 }
 
 void Network::display() const {

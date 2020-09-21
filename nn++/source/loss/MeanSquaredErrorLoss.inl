@@ -1,24 +1,29 @@
 #pragma once
 
 inline float MeanSquaredErrorLoss::func(
-	const Vec<float> &actual, const Vec<float> &prediction
+	const Mat<float> &actual, const Mat<float> &prediction
 ) const {
 	float squaredErrorSum = 0.0f;
-	for (size_t i = 0; i < actual.size; ++i) {
-		squaredErrorSum += (
-			(actual(i) - prediction(i)) *
-			(actual(i) - prediction(i))
-		);
+	for (size_t i = 0; i < actual.rows; ++i) {
+		for (size_t j = 0; j < actual.cols; ++j) {
+			squaredErrorSum +=
+				(actual(i, j) - prediction(i, j)) *
+				(actual(i, j) - prediction(i, j));
+		}
 	}
-	return squaredErrorSum / actual.size;
+	return squaredErrorSum / actual.rows / actual.cols;
 }
 
-inline Vec<float> MeanSquaredErrorLoss::derivative(
-	const Vec<float> &actual, const Vec<float> &prediction
+inline Mat<float> MeanSquaredErrorLoss::derivative(
+	const Mat<float> &actual, const Mat<float> &prediction
 ) const {
-	Vec<float> derivatives(actual.size);
-	for (size_t i = 0; i < actual.size; ++i) {
-		derivatives(i) =  (2.0f / actual.size) * (prediction(i) - actual(i));
+	Mat<float> derivatives(actual.rows, actual.cols);
+	for (size_t i = 0; i < actual.rows; ++i) {
+		for (size_t j = 0; j < actual.cols; ++j) {
+			derivatives(i, j) =
+				(2.0f / actual.rows / actual.cols) *
+				(prediction(i, j) - actual(i, j));
+		}
 	}
 	return derivatives;
 }

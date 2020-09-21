@@ -1,16 +1,16 @@
 #pragma once
 
 #include "loss/Loss.h"
-#include "math/Vec.h"
+#include "math/Mat.h"
 
 class MeanSquaredErrorLoss : public Loss {
 public:
 	float func(
-		const Vec<float> &actual, const Vec<float> &prediction
+		const Mat<float> &actual, const Mat<float> &prediction
 	) const override;
 
-	Vec<float> derivative(
-		const Vec<float> &actual, const Vec<float> &prediction
+	Mat<float> derivative(
+		const Mat<float> &actual, const Mat<float> &prediction
 	) const override;
 };
 

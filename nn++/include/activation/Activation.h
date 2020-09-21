@@ -1,14 +1,15 @@
 #pragma once
 
-#include "math/Vec.h"
+#include "math/Mat.h"
 
 class Activation {
 protected:
+	//Used for random weight initialization
 	float weightFactor = 1.0f;
 
 public:
-	virtual Vec<float> func(const Vec<float> &input) const = 0;
-	virtual Vec<float> derivative(const Vec<float> &input) const = 0;
+	virtual Mat<float> func(const Mat<float> &input) const = 0;
+	virtual Mat<float> derivative(const Mat<float> &input) const = 0;
 
 	float getWeightFactor() const;
 };

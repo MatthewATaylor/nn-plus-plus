@@ -63,6 +63,7 @@ public:
 	template <typename U>
 	Mat<T> powByElements(U power) const;
 	
+	Mat<T> multiplyByElements(const Mat<T> &otherMat) const;
 	Mat<T> divideByElements(const Mat<T> &otherMat) const;
 };
 

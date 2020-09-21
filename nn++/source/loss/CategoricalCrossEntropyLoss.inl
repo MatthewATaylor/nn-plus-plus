@@ -1,21 +1,25 @@
 #pragma once
 
 inline float CategoricalCrossEntropyLoss::func(
-	const Vec<float> &actual, const Vec<float> &prediction
+	const Mat<float> &actual, const Mat<float> &prediction
 ) const {
 	float lossTotal = 0.0f;
-	for (size_t i = 0; i < actual.size; ++i) {
-		lossTotal -= actual(i) * std::log(prediction(i) + 0.000000000000000000001f);
+	for (size_t i = 0; i < actual.rows; ++i) {
+		for (size_t j = 0; j < actual.cols; ++j) {
+			lossTotal -= actual(i, j) * std::log(prediction(i, j) + 0.0000000001f);
+		}
 	}
-	return lossTotal;
+	return lossTotal / actual.cols;
 }
 
-inline Vec<float> CategoricalCrossEntropyLoss::derivative(
-	const Vec<float> &actual, const Vec<float> &prediction
+inline Mat<float> CategoricalCrossEntropyLoss::derivative(
+	const Mat<float> &actual, const Mat<float> &prediction
 ) const {
-	Vec<float> derivatives(actual.size);
-	for (size_t i = 0; i < actual.size; ++i) {
-		derivatives(i) = -actual(i) / (prediction(i));
+	Mat<float> derivatives(actual.rows, actual.cols);
+	for (size_t i = 0; i < actual.rows; ++i) {
+		for (size_t j = 0; j < actual.cols; ++j) {
+			derivatives(i, j) = -actual(i, j) / (prediction(i, j));
+		}
 	}
 	return derivatives;
 }

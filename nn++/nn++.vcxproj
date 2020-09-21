@@ -167,6 +167,7 @@
     <ClInclude Include="include\math\Mat.h" />
     <ClInclude Include="include\math\Vec.h" />
     <ClInclude Include="include\Network.h" />
+    <ClInclude Include="include\nnpp.h" />
     <ClInclude Include="include\optimizer\AdamOptimizer.h" />
     <ClInclude Include="include\optimizer\MomentumOptimizer.h" />
     <ClInclude Include="include\optimizer\Optimizer.h" />

@@ -1,22 +1,24 @@
 #pragma once
 
-inline Vec<float> SigmoidActivation::func(const Vec<float> &input) const {
-	Vec<float> activation(input.size);
-	for (size_t i = 0; i < input.size; ++i) {
-		float inputValue = input(i);
-		float newValue = 1.0f / (1.0f + std::exp(-inputValue));
-		activation(i) = newValue;
+inline Mat<float> SigmoidActivation::func(const Mat<float> &input) const {
+	Mat<float> activation(input.rows, input.cols);
+	for (size_t i = 0; i < input.rows; ++i) {
+		for (size_t j = 0; j < input.cols; ++j) {
+			float inputValue = input(i, j);
+			activation(i, j) = 1.0f / (1.0f + std::exp(-inputValue));
+		}
 	}
 	return activation;
 }
 
-inline Vec<float> SigmoidActivation::derivative(const Vec<float> &input) const {
-	Vec<float> derivatives(input.size);
-	for (size_t i = 0; i < input.size; ++i) {
-		float inputValue = input(i);
-		float exponential = std::exp(-inputValue);
-		float newValue = exponential / ((1.0f + exponential) * (1.0f + exponential));
-		derivatives(i) = newValue;
+inline Mat<float> SigmoidActivation::derivative(const Mat<float> &input) const {
+	Mat<float> derivatives(input.rows, input.cols);
+	for (size_t i = 0; i < input.rows; ++i) {
+		for (size_t j = 0; j < input.cols; ++j) {
+			float inputValue = input(i, j);
+			float exponential = std::exp(-inputValue);
+			derivatives(i, j) = exponential / ((1.0f + exponential) * (1.0f + exponential));
+		}
 	}
 	return derivatives;
 }

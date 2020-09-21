@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Activation.h"
-#include "math/Vec.h"
+#include "math/Mat.h"
 
 class LeakyReLUActivation : public Activation {
 public:
-	Vec<float> func(const Vec<float> &input) const override;
-	Vec<float> derivative(const Vec<float> &input) const override;
+	Mat<float> func(const Mat<float> &input) const override;
+	Mat<float> derivative(const Mat<float> &input) const override;
 };
 
 #include "../source/activation/LeakyReLUActivation.inl"

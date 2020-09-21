@@ -15,7 +15,7 @@ private:
 
 public:
 	AdamOptimizer(float learningRate = 0.001f, float beta1 = 0.9f, float beta2 = 0.999f);
-	void updateLayer(Dense *layer, const Vec<float> &prevNodes, unsigned int timestep) override;
+	void updateLayer(Dense *layer, const Mat<float> &prevNodes, unsigned int timestep) override;
 };
 
 #include "../source/optimizer/AdamOptimizer.inl"

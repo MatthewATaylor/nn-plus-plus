@@ -89,11 +89,11 @@ int main() {
 	AdamOptimizer optimizer;
 
 	std::cout << "\nTraining model...\n";
-	network.train(trainImages, trainLabels, TRAIN_SIZE, &loss, &optimizer, 25);
+	network.train(trainImages, trainLabels, TRAIN_SIZE, &loss, &optimizer, 50, 64);
 
 	std::cout << "\nMaking predictions...\n";
 	for (size_t i = 0; i < TEST_SIZE; ++i) {
-		std::cout << "Prediction: " << network.evaluate(testImages[i]) << "\n";
+		std::cout << "Prediction:\n" << network.evaluate(Mat<float>(testImages[i])) << "\n";
 		std::cout << "Target: " << testLabels[i] << "\n";
 		std::cin.get();
 	}
