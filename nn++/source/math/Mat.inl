@@ -319,3 +319,38 @@ inline Mat<T> Mat<T>::divideByElements(const Mat<T> &otherMat) const {
 	}
 	return result;
 }
+
+template <typename T>
+inline Vec<size_t> Mat<T>::maxRowByCol() const {
+	Vec<size_t> result(cols);
+	for (size_t i = 0; i < cols; ++i) {
+		T maxVal = 0;
+		size_t maxRow = 0;
+		for (size_t j = 0; j < rows; ++j) {
+			if (j == 0 || elements[j][i] > maxVal) {
+				maxVal = elements[j][i];
+				maxRow = j;
+			}
+		}
+		result(i) = maxRow;
+	}
+	return result;
+}
+
+template <typename T>
+inline Vec<T> Mat<T>::getCol(size_t col) const {
+	Vec<T> result(rows);
+	for (size_t i = 0; i < rows; ++i) {
+		result(i) = elements[i][col];
+	}
+	return result;
+}
+
+template <typename T>
+inline Vec<T> Mat<T>::getRow(size_t row) const {
+	Vec<T> result(cols);
+	for (size_t i = 0; i < cols; ++i) {
+		result(i) = elements[row][i];
+	}
+	return result;
+}

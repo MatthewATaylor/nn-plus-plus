@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 #include <initializer_list>
 #include <typeinfo>
 #include <stdexcept>
@@ -19,6 +20,8 @@
 class Network {
 private:
 	std::vector<Dense*> layers;
+	bool accuracyEnabled = false;
+	std::function<bool(const Mat<float> &prediction, const Mat<float> &target)> accuracyFunc;
 
 public:
 	Network();
@@ -37,11 +40,16 @@ public:
 		const Mat<float> &input, const Mat<float> &target, const Loss *loss
 	);
 
+	void setAccuracyFunc(std::function<bool(const Mat<float> &prediction, const Mat<float> &target)> accuracyFunc);
+
 	void train(
-		const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
+		const Vec<float> *testInputs, const Vec<float> *testTargets, size_t testSize,
 		const Loss *loss, Optimizer *optimizer, unsigned int epochs,
-		size_t batchSize = 32, bool shuffle = true
+		size_t batchSize = 32, bool shuffle = true,
+		const Vec<float> *valInputs = nullptr, const Vec<float> *valTargets = nullptr, size_t valSize = 0
 	);
+
+	const Dense *getLayer(size_t index) const;
 
 	void display() const;
 };

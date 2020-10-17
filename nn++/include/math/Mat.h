@@ -65,6 +65,12 @@ public:
 	
 	Mat<T> multiplyByElements(const Mat<T> &otherMat) const;
 	Mat<T> divideByElements(const Mat<T> &otherMat) const;
+
+	//Return Vec containing row number of maximum element in each column
+	Vec<size_t> maxRowByCol() const;
+
+	Vec<T> getCol(size_t col) const;
+	Vec<T> getRow(size_t row) const;
 };
 
 #include "../../source/math/Mat.inl"

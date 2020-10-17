@@ -24,10 +24,18 @@ inline float Network::getLoss(
 	return loss->func(target, prediction);
 }
 
+inline void Network::setAccuracyFunc(
+	std::function<bool(const Mat<float> &prediction, const Mat<float> &target)> accuracyFunc
+) {
+	accuracyEnabled = true;
+	this->accuracyFunc = accuracyFunc;
+}
+
 inline void Network::train(
 	const Vec<float> *inputs, const Vec<float> *targets, size_t dataSize,
 	const Loss *loss, Optimizer *optimizer, unsigned int epochs,
-	size_t batchSize, bool shuffle
+	size_t batchSize, bool shuffle,
+	const Vec<float> *valInputs, const Vec<float> *valTargets, size_t valSize
 ) {
 	if (layers.size() == 0) {
 		return;
@@ -51,7 +59,11 @@ inline void Network::train(
 		indices[i] = i;
 	}
 
+	size_t dataUtilized = batchSize * (dataSize / batchSize);
+
 	for (unsigned int epoch = 0; epoch < epochs; ++epoch) {
+		std::cout << "Epoch " << epoch << "\n";
+		
 		if (shuffle) {
 			std::random_device randomDevice;
 			std::mt19937 generator(randomDevice());
@@ -59,6 +71,7 @@ inline void Network::train(
 		}
 		
 		float totalLoss = 0.0f;
+		size_t correctPredictions = 0;
 		for (size_t indexNum = 0; indexNum <= dataSize - batchSize; indexNum += batchSize) {
 			//Generate batched data
 			size_t inputSize = inputs[0].size;
@@ -78,6 +91,17 @@ inline void Network::train(
 			//Evaluate all layers' activations and weighted inputs
 			Mat<float> prediction = evaluate(inputBatch);
 			totalLoss += loss->func(targetBatch, prediction);
+
+			//Determine accuracy
+			if (accuracyEnabled) {
+				for (size_t i = 0; i < batchSize; ++i) {
+					Mat<float> predictionCol = Mat<float>(prediction.getCol(i));
+					Mat<float> targetCol = Mat<float>(targetBatch.getCol(i));
+					if (accuracyFunc(predictionCol, targetCol)) {
+						++correctPredictions;
+					}
+				}
+			}
 
 			//Calculate output layer error
 			if (isSoftmaxOutput) {
@@ -110,11 +134,39 @@ inline void Network::train(
 			}
 		}
 
-		std::cout << "Epoch " << epoch << "\n";
 		std::cout << "    Loss: " << totalLoss / dataSize << "\n";
+		if (accuracyEnabled) {
+			std::cout << "    Accuracy: " << float(correctPredictions) / dataUtilized << "\n";
+		}
+		
+		if (valInputs && valTargets) {
+			float totalValLoss = 0.0f;
+			size_t correctValPredictions = 0;
+			for (size_t i = 0; i < valSize; ++i) {
+				//Loss
+				Mat<float> prediction = evaluate(Mat<float>(valInputs[i]));
+				totalValLoss += loss->func(valTargets[i], prediction);
+
+				//Accuracy
+				if (accuracyEnabled) {
+					if (accuracyFunc(prediction, Mat<float>(valTargets[i]))) {
+						++correctValPredictions;
+					}
+				}
+			}
+			std::cout << "    Validation Loss: " << totalValLoss / valSize << "\n";
+
+			if (accuracyEnabled) {
+				std::cout << "    Validation Accuracy: " << float(correctValPredictions) / valSize << "\n";
+			}
+		}
 	}
 
 	delete[] indices;
+}
+
+const Dense *Network::getLayer(size_t index) const {
+	return layers[index];
 }
 
 void Network::display() const {

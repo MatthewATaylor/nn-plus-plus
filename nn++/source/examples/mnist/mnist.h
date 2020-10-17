@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-#include "activation/ReLUActivation.h"
+#include "activation/LeakyReLUActivation.h"
 #include "activation/SoftmaxActivation.h"
 #include "loss/CategoricalCrossEntropyLoss.h"
 #include "optimizer/AdamOptimizer.h"
@@ -40,12 +40,18 @@ void loadLabels(Vec<float> *labels, size_t numLabels, const std::string &path) {
 	}
 }
 
+bool accuracyFunc(const Mat<float> &prediction, const Mat<float> &target) {
+	size_t predictedCategory = prediction.maxRowByCol()(0);
+	size_t actualCategory = target.maxRowByCol()(0);
+	return predictedCategory == actualCategory;
+}
+
 int main() {
 	const size_t TRAIN_SIZE = 1000;
-	const size_t TEST_SIZE = 10;
+	const size_t TEST_SIZE = 100;
 	const std::string DATA_DIR = "../nn++/source/examples/mnist/data";
 
-	std::cout << "Loading data...\n";
+	std::cout << "Loading data...\n\n";
 
 	//Load images
 	Vec<float> *trainImages = new Vec<float>[TRAIN_SIZE];
@@ -71,33 +77,75 @@ int main() {
 	loadLabels(trainLabels, TRAIN_SIZE, DATA_DIR + "/train-labels.idx1-ubyte");
 	loadLabels(testLabels, TEST_SIZE, DATA_DIR + "/test-labels.idx1-ubyte");
 
-	//Generate model
-	ReLUActivation relu;
-	SoftmaxActivation softmax;
+	//Display train data
+	for (size_t i = 0; i < 5; ++i) {
+		std::string imageStr = "";
+		std::string simplifiedImageStr = "";
 
-	Dense dense1(IMG_PIXELS, 32, &relu);
-	Dense dense2(32, 64, &relu);
-	Dense dense3(64, NUM_LABELS, &softmax);
+		//Image
+		for (size_t row = 0; row < IMG_SIZE; ++row) {
+			for (size_t col = 0; col < IMG_SIZE; ++col) {
+				size_t index = col + IMG_SIZE * row;
+				
+				int pixelValue = int(trainImages[i](index) * 255);
+				std::string pixelStr = std::to_string(pixelValue);
+				
+				while (pixelStr.size() < 3) {
+					pixelStr.insert(pixelStr.begin(), '0');
+				}
+				imageStr += pixelStr + ' ';
 
-	Network network{
-		&dense1,
-		&dense2,
-		&dense3
-	};
+				if (pixelValue) {
+					simplifiedImageStr += '#';
+				}
+				else {
+					simplifiedImageStr += ' ';
+				}
+			}
+			imageStr += "\n";
+			simplifiedImageStr += "\n";
+		}
+		std::cout << imageStr << simplifiedImageStr;
 
-	CategoricalCrossEntropyLoss loss;
-	AdamOptimizer optimizer;
+		//Label
+		size_t number = Mat<float>(trainLabels[i]).maxRowByCol()(0);
+		std::cout << "Label: " << number << "\n";
 
-	std::cout << "\nTraining model...\n";
-	network.train(trainImages, trainLabels, TRAIN_SIZE, &loss, &optimizer, 50, 64);
-
-	std::cout << "\nMaking predictions...\n";
-	for (size_t i = 0; i < TEST_SIZE; ++i) {
-		std::cout << "Prediction:\n" << network.evaluate(Mat<float>(testImages[i])) << "\n";
-		std::cout << "Target: " << testLabels[i] << "\n";
 		std::cin.get();
 	}
 
+	//Activations
+	LeakyReLUActivation leakyRelu;
+	SoftmaxActivation softmax;
+		//LinearActivation linear;
+		//ReLUActivation relu;
+		//SigmoidActivation sigmoid;
+		//TanhActivation tanh;
+
+	//Generate model
+	Network network{
+		new Dense(IMG_PIXELS, 32, &leakyRelu),	//32 units
+		new Dense(32, 64, &leakyRelu),			//64 units
+		new Dense(64, NUM_LABELS, &softmax)		//10 units
+	};
+
+	std::cout << "\nTraining model...\n";
+	network.setAccuracyFunc(accuracyFunc);
+	CategoricalCrossEntropyLoss loss;
+		//BinaryCrossEntropyLoss loss;
+		//MeanSquaredErrorLoss loss;
+	AdamOptimizer optimizer; 
+		//MomentumOptimizer optimizer;
+		//RMSPropOptimizer optimizer;
+		//SGDOptimizer optimizer(0.001f);
+
+	network.train(
+		trainImages, trainLabels, TRAIN_SIZE,
+		&loss, &optimizer, 50, 64, true,
+		testImages, testLabels, TEST_SIZE
+	);
+
+	std::cout << "\nPress enter to exit...";
 	std::cin.get();
 	return 0;
 }
