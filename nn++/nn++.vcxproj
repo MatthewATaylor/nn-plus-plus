@@ -174,7 +174,6 @@
     <ClInclude Include="include\optimizer\RMSPropOptimizer.h" />
     <ClInclude Include="include\optimizer\SGDOptimizer.h" />
     <ClInclude Include="source\examples\addition\addition.h" />
-    <ClInclude Include="source\examples\classifier\classifier.h" />
     <ClInclude Include="source\examples\mnist\mnist.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

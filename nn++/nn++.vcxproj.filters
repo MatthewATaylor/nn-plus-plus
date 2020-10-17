@@ -122,9 +122,6 @@
     <ClInclude Include="source\examples\addition\addition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\examples\classifier\classifier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\optimizer\Optimizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
